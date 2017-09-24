@@ -157,7 +157,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
         Intent intent = new Intent(getContext(), PreviewImageBeforeUploadActivity.class);
         intent.putExtra("picture", bytes);
         startActivity(intent);
-        camera.startPreview();
+//        camera.startPreview();
     }
 
     class StorePhotoTask extends AsyncTask<byte[], String, String> {

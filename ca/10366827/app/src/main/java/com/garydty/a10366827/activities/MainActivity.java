@@ -196,20 +196,20 @@ public class MainActivity extends AppCompatActivity
     @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     public void loadCameraFragment(){
         FragmentManager fm = getSupportFragmentManager();
-        mRoutesFragment = (RoutesFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
+        mCameraFragment = (CameraFragment) fm.findFragmentByTag(TAG_CAMERA_FRAGMENT);
         // create the fragment and data the first time
         if (mRoutesFragment == null) {
-            Log.i("LoadFragment", "RoutesFragment");
+            Log.i("LoadFragment", "CameraFragment");
             // add the fragment
-            mRoutesFragment = RoutesFragment.newInstance();
-            fm.beginTransaction().add(mRoutesFragment, TAG_ROUTES_FRAGMENT).commit();
+            mCameraFragment = CameraFragment.newInstance();
+            fm.beginTransaction().add(mCameraFragment, TAG_CAMERA_FRAGMENT).commit();
 //            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
 //            // load data from a data source or perform any calculation
 //            mRetainedFragment.setData(loadMyData());
         }
 
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mRoutesFragment);
+        fragmentTransaction.replace(R.id.fragment_holder, mCameraFragment);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
 
