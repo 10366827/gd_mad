@@ -37,6 +37,7 @@ public class CameraDisplay extends SurfaceView implements SurfaceHolder.Callback
     private Camera mCamera;
     private Camera.CameraInfo mCameraInfo;
     private int mDisplayOrientation;
+    private int previewOrientation;
 
     public CameraDisplay(Context context, Camera camera, Camera.CameraInfo cameraInfo,
                          int displayOrientation) {
@@ -86,9 +87,10 @@ public class CameraDisplay extends SurfaceView implements SurfaceHolder.Callback
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
 
-        int orientation = calculatePreviewOrientation(mCameraInfo, mDisplayOrientation);
-        mCamera.setDisplayOrientation(orientation);
-
+//        int orientation = calculatePreviewOrientation(mCameraInfo, mDisplayOrientation);
+        previewOrientation = calculatePreviewOrientation(mCameraInfo, mDisplayOrientation);
+//        mCamera.setDisplayOrientation(orientation);
+        mCamera.setDisplayOrientation(previewOrientation);
         try {
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
@@ -131,6 +133,10 @@ public class CameraDisplay extends SurfaceView implements SurfaceHolder.Callback
         }
 
         return result;
+    }
+
+    public int getDisplayOrientation(){
+        return previewOrientation;
     }
 
     public void setCamera(Camera camera, Camera.CameraInfo cameraInfo, int displayOrientation) {

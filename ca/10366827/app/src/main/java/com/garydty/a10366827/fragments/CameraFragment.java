@@ -32,12 +32,12 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     private static final String TAG = "CameraPreview";
 
     /**
-     * Id of the camera to access. 0 is the first camera.
+     * Id of the mCamera to access. 0 is the first mCamera.
      */
     private static final int CAMERA_ID = 0;
 
     private CameraDisplay preview;
-    private Camera camera;
+    private Camera mCamera;
 
     public static CameraFragment newInstance() {
         return new CameraFragment();
@@ -53,22 +53,22 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ImageButton backButton = view.findViewById(R.id.take_photo_btn);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton takePicButton = view.findViewById(R.id.take_photo_btn);
+        takePicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackClick();
+                onTakePicClick();
             }
         });
         initCamera();
     }
 
     private void initCamera() {
-        camera = getCameraInstance(CAMERA_ID);
+        mCamera = getCameraInstance(CAMERA_ID);
         android.hardware.Camera.CameraInfo cameraInfo = null;
 
-        if (camera != null) {
-            // Get camera info only if the camera is available
+        if (mCamera != null) {
+            // Get mCamera info only if the mCamera is available
             cameraInfo = new Camera.CameraInfo();
             Camera.getCameraInfo(CAMERA_ID, cameraInfo);
         }
@@ -86,24 +86,29 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
 
         if (this.preview == null) {
             // Create the Preview view and set it as the content of this Activity.
-            this.preview = new CameraDisplay(getActivity(), camera, cameraInfo, displayRotation);
+            this.preview = new CameraDisplay(getActivity(), mCamera, cameraInfo, displayRotation);
         } else {
-            this.preview.setCamera(camera, cameraInfo, displayRotation);
+            this.preview.setCamera(mCamera, cameraInfo, displayRotation);
         }
 
         preview.addView(this.preview);
     }
 
-    private void onBackClick() {
+    private void onTakePicClick() {
 //        getFragmentManager().popBackStack()
+//        mCamera.setDisplayOrientation(preview.getDisplayOrientation());
+        Camera.Parameters parameters = mCamera.getParameters();
 
-        camera.autoFocus(new Camera.AutoFocusCallback(){
+        parameters.setRotation(preview.getDisplayOrientation()); //set rotation to save the picture
+        mCamera.setParameters(parameters);
+
+        mCamera.autoFocus(new Camera.AutoFocusCallback(){
             public void onAutoFocus(boolean success, Camera camera){
                 camera.takePicture(new Camera.ShutterCallback(){
-                                       public void onShutter(){
+                           public void onShutter(){
 
-                                       }
-                                   },
+                           }
+                        },
                         null,
                         CameraFragment.this
                 );
@@ -114,7 +119,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     @Override
     public void onResume() {
         super.onResume();
-        if (camera == null) {
+        if (mCamera == null) {
             initCamera();
         }
     }
@@ -122,7 +127,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     @Override
     public void onPause() {
         super.onPause();
-        // Stop camera access
+        // Stop mCamera access
         releaseCamera();
     }
 
@@ -135,13 +140,13 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
             // Camera is not available (in use or does not exist)
             Log.d(TAG, "Camera " + cameraId + " is not available: " + e.getMessage());
         }
-        return c; // returns null if camera is unavailable
+        return c; // returns null if mCamera is unavailable
     }
 
     private void releaseCamera() {
-        if (camera != null) {
-            camera.release();        // release the camera for other applications
-            camera = null;
+        if (mCamera != null) {
+            mCamera.release();        // release the mCamera for other applications
+            mCamera = null;
         }
     }
 
@@ -157,7 +162,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
         Intent intent = new Intent(getContext(), PreviewImageBeforeUploadActivity.class);
         intent.putExtra("picture", bytes);
         startActivity(intent);
-//        camera.startPreview();
+//        mCamera.startPreview();
     }
 
     class StorePhotoTask extends AsyncTask<byte[], String, String> {
