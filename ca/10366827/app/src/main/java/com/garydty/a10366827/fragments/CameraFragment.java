@@ -22,6 +22,7 @@ import com.garydty.a10366827.activities.PreviewImageBeforeUploadActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Gary Doherty on 19/09/2017.
@@ -32,7 +33,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     private static final String TAG = "CameraPreview";
 
     /**
-     * Id of the mCamera to access. 0 is the first mCamera.
+     * Id of the camera to access. 0 is the first camera.
      */
     private static final int CAMERA_ID = 0;
 
@@ -95,13 +96,20 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     }
 
     private void onTakePicClick() {
-//        getFragmentManager().popBackStack()
-//        mCamera.setDisplayOrientation(preview.getDisplayOrientation());
+        //  Fixes the image result from being the wrong orientation
         Camera.Parameters parameters = mCamera.getParameters();
+        parameters.setRotation(preview.getDisplayOrientation());
 
-        parameters.setRotation(preview.getDisplayOrientation()); //set rotation to save the picture
+        //  Set output quality, using a medium quality by dividing supportedSizes by 2
+        List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();
+        if(supportedSizes != null && !supportedSizes.isEmpty()) {
+            Camera.Size sizePicture = supportedSizes.get(supportedSizes.size() / 2);
+            parameters.setPictureSize(sizePicture.width, sizePicture.height);
+        }
+
         mCamera.setParameters(parameters);
 
+        //  Call the auto-focus, then call takePicture
         mCamera.autoFocus(new Camera.AutoFocusCallback(){
             public void onAutoFocus(boolean success, Camera camera){
                 camera.takePicture(new Camera.ShutterCallback(){
@@ -114,6 +122,17 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
                 );
             }
         });
+    }
+
+    //  Called when takePicture completes, as long as the fragment is passed for the callback
+    @Override
+    public void onPictureTaken(byte[] bytes, Camera camera) {
+//        new CameraDisplay.StorePhotoTask().execute(bytes);
+        Toast.makeText(getContext(), "" + bytes.length, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getContext(), PreviewImageBeforeUploadActivity.class);
+        intent.putExtra("picture", bytes);
+        startActivity(intent);
+//        mCamera.startPreview();
     }
 
     @Override
@@ -153,16 +172,6 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     @Override
     public void onSaveInstanceState( Bundle outState ) {
 
-    }
-
-    @Override
-    public void onPictureTaken(byte[] bytes, Camera camera) {
-//        new CameraDisplay.StorePhotoTask().execute(bytes);
-        Toast.makeText(getContext(), "" + bytes.length, Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getContext(), PreviewImageBeforeUploadActivity.class);
-        intent.putExtra("picture", bytes);
-        startActivity(intent);
-//        mCamera.startPreview();
     }
 
     class StorePhotoTask extends AsyncTask<byte[], String, String> {
