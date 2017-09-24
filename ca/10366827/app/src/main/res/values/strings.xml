@@ -23,5 +23,13 @@
     <string name="permission_camera_rationale">Camera Permissions Required</string>
     <string name="permission_storage_rationale">Permission to write to external storage required</string>
     <string name="permission_camera_never_ask_again">Camera permission will never be asked for again...</string>
+
+    <string name="title_activity_preview_image_before_upload">PreviewImageBeforeUploadActivity
+    </string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="user_image">user image</string>
     <!--<string name="timetables">Timetables</string>-->
 </resources>

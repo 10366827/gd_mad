@@ -5,6 +5,8 @@ package com.garydty.a10366827.fragments;
  */
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.view.SurfaceView;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,7 +16,10 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  * Camera preview that displays a {@link Camera}.
@@ -36,13 +41,11 @@ public class CameraDisplay extends SurfaceView implements SurfaceHolder.Callback
     public CameraDisplay(Context context, Camera camera, Camera.CameraInfo cameraInfo,
                          int displayOrientation) {
         super(context);
-
         // Do not initialise if no camera has been set
         if (camera == null || cameraInfo == null) {
             return;
         }
         setCamera(camera, cameraInfo, displayOrientation);
-
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mHolder = getHolder();

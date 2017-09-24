@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +41,13 @@ import permissions.dispatcher.RuntimePermissions;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
+    private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
+    private static final String TAG_ROUTES_FRAGMENT = "RoutesFragment";
+    private static final String TAG_STOP_FRAGMENT = "StopFragment";
+    private CameraFragment mCameraFragment;
+    private RoutesFragment mRoutesFragment;
+    private StopFragment mStopFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,16 +72,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        replaceFragment(RoutesFragment.newInstance("fjdsk", "jfdks"));
     }
 
     public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_holder, fragment);
-        fragmentTransaction.addToBackStack(fragment.toString());
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//        fragmentTransaction.addToBackStack(fragment.toString());
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
     }
 
@@ -144,11 +150,70 @@ public class MainActivity extends AppCompatActivity
 //    }
 
     private void loadRoutesFragment(){
-        replaceFragment(RoutesFragment.newInstance("fjdsk", "jfdks"));
+        FragmentManager fm = getSupportFragmentManager();
+        mRoutesFragment = (RoutesFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
+        // create the fragment and data the first time
+        if (mRoutesFragment == null) {
+            Log.i("LoadFragment", "RoutesFragment");
+            // add the fragment
+            mRoutesFragment = RoutesFragment.newInstance();
+            fm.beginTransaction().add(mRoutesFragment, TAG_ROUTES_FRAGMENT).commit();
+//            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
+//            // load data from a data source or perform any calculation
+//            mRetainedFragment.setData(loadMyData());
+        }
+
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_holder, mRoutesFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.commit();
+
+//        replaceFragment(mRoutesFragment);
     }
 
     private void loadStopFragment(){
-        replaceFragment(StopFragment.newInstance("fdjsk", "jfdsk"));
+        FragmentManager fm = getSupportFragmentManager();
+        mStopFragment = (StopFragment)fm.findFragmentByTag(TAG_STOP_FRAGMENT);
+        // create the fragment and data the first time
+        if (mStopFragment == null) {
+            Log.i("LoadFragment", "StopFragment");
+            // add the fragment
+            mStopFragment = StopFragment.newInstance();
+            fm.beginTransaction().add(mStopFragment, TAG_STOP_FRAGMENT).commit();
+//            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
+//            // load data from a data source or perform any calculation
+//            mRetainedFragment.setData(loadMyData());
+        }
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_holder, mStopFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.commit();
+
+
+//        replaceFragment(mStopFragment);
+    }
+
+    @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
+    public void loadCameraFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        mRoutesFragment = (RoutesFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
+        // create the fragment and data the first time
+        if (mRoutesFragment == null) {
+            Log.i("LoadFragment", "RoutesFragment");
+            // add the fragment
+            mRoutesFragment = RoutesFragment.newInstance();
+            fm.beginTransaction().add(mRoutesFragment, TAG_ROUTES_FRAGMENT).commit();
+//            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
+//            // load data from a data source or perform any calculation
+//            mRetainedFragment.setData(loadMyData());
+        }
+
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_holder, mRoutesFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.commit();
+
+//        replaceFragment(CameraFragment.newInstance());
     }
 
     @Override
@@ -205,10 +270,5 @@ public class MainActivity extends AppCompatActivity
         // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.permission_camera_rationale, request);
-    }
-
-    @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
-    public void loadCameraFragment(){
-        replaceFragment(CameraFragment.newInstance());
     }
 }

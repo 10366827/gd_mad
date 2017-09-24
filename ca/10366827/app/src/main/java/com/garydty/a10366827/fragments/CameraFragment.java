@@ -1,8 +1,11 @@
 package com.garydty.a10366827.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,14 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.garydty.a10366827.R;
+import com.garydty.a10366827.activities.PreviewImageBeforeUploadActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Calendar;
 
 /**
  * Created by Gary Doherty on 19/09/2017.
  */
 
-public class CameraFragment extends Fragment {
+public class CameraFragment extends Fragment implements Camera.PictureCallback {
 
     private static final String TAG = "CameraPreview";
 
@@ -86,7 +95,20 @@ public class CameraFragment extends Fragment {
     }
 
     private void onBackClick() {
-        getFragmentManager().popBackStack();
+//        getFragmentManager().popBackStack()
+
+        camera.autoFocus(new Camera.AutoFocusCallback(){
+            public void onAutoFocus(boolean success, Camera camera){
+                camera.takePicture(new Camera.ShutterCallback(){
+                                       public void onShutter(){
+
+                                       }
+                                   },
+                        null,
+                        CameraFragment.this
+                );
+            }
+        });
     }
 
     @Override
@@ -126,5 +148,40 @@ public class CameraFragment extends Fragment {
     @Override
     public void onSaveInstanceState( Bundle outState ) {
 
+    }
+
+    @Override
+    public void onPictureTaken(byte[] bytes, Camera camera) {
+//        new CameraDisplay.StorePhotoTask().execute(bytes);
+        Toast.makeText(getContext(), "" + bytes.length, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getContext(), PreviewImageBeforeUploadActivity.class);
+        intent.putExtra("picture", bytes);
+        startActivity(intent);
+        camera.startPreview();
+    }
+
+    class StorePhotoTask extends AsyncTask<byte[], String, String> {
+        @Override
+        protected String doInBackground(byte[]... jpeg) {
+            File photo=
+                    new File(Environment.getExternalStorageDirectory(),
+                            Calendar.getInstance().getTime().toString() + ".jpg");
+
+            if (photo.exists()) {
+                photo.delete();
+            }
+
+            try {
+                FileOutputStream fos=new FileOutputStream(photo.getPath());
+
+                fos.write(jpeg[0]);
+                fos.close();
+            }
+            catch (java.io.IOException e) {
+                Log.e("PictureDemo", "Exception in photoCallback", e);
+            }
+
+            return(null);
+        }
     }
 }
