@@ -6,6 +6,8 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,17 +32,14 @@ import java.util.List;
 
 public class CameraFragment extends Fragment implements Camera.PictureCallback {
 
-    private static final String TAG = "CameraPreview";
-
-    /**
-     * Id of the camera to access. 0 is the first camera.
-     */
+    private static final String TAG = "CameraFragment";
     private static final int CAMERA_ID = 0;
 
-    private CameraDisplay preview;
+    private CameraDisplay mCameraDisplay;
     private Camera mCamera;
 
     public static CameraFragment newInstance() {
+        Log.i(TAG, "constructor");
         return new CameraFragment();
     }
 
@@ -48,7 +47,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera, null);
+        return inflater.inflate(R.layout.fragment_camera, container, false);
     }
 
     @Override
@@ -61,7 +60,8 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
                 onTakePicClick();
             }
         });
-        initCamera();
+        if(mCamera == null)
+            initCamera();
     }
 
     private void initCamera() {
@@ -74,7 +74,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
             Camera.getCameraInfo(CAMERA_ID, cameraInfo);
         }
 
-        // Get the rotation of the screen to adjust the preview image accordingly.
+        // Get the rotation of the screen to adjust the mCameraDisplay image accordingly.
         final int displayRotation = getActivity().getWindowManager().getDefaultDisplay()
                 .getRotation();
 
@@ -82,23 +82,28 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
             return;
         }
 
-        FrameLayout preview = getView().findViewById(R.id.user_photo);
+        final FrameLayout preview = getActivity().findViewById(R.id.user_photo);
         preview.removeAllViews();
+        ((ViewGroup)preview.getParent()).removeView(mCameraDisplay);
 
-        if (this.preview == null) {
+        if (mCameraDisplay == null) {
             // Create the Preview view and set it as the content of this Activity.
-            this.preview = new CameraDisplay(getActivity(), mCamera, cameraInfo, displayRotation);
+            mCameraDisplay = new CameraDisplay(getActivity(), mCamera, cameraInfo, displayRotation);
         } else {
-            this.preview.setCamera(mCamera, cameraInfo, displayRotation);
+            mCameraDisplay.setCamera(mCamera, cameraInfo, displayRotation);
         }
-
-        preview.addView(this.preview);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            public void run() {
+                preview.addView(mCameraDisplay);
+            }
+        }, 350);
+//        preview.addView(mCameraDisplay);
     }
 
     private void onTakePicClick() {
         //  Fixes the image result from being the wrong orientation
         Camera.Parameters parameters = mCamera.getParameters();
-        parameters.setRotation(preview.getDisplayOrientation());
+        parameters.setRotation(mCameraDisplay.getDisplayOrientation());
 
         //  Set output quality, using a medium quality by dividing supportedSizes by 2
         List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();

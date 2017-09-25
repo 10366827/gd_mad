@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.transition.Visibility;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,19 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageRequest;
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.models.Summoner;
-import com.garydty.a10366827.utility.GsonRequest;
-import com.garydty.a10366827.utility.NetworkHelper;
 import com.garydty.a10366827.utility.RiotRequestHelper;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class SummonerSearchFragment extends Fragment {
     private static final String TAG = SummonerSearchFragment.class.getSimpleName();
@@ -150,21 +141,21 @@ public class SummonerSearchFragment extends Fragment {
 //                RiotRequestHelper.generateSummonerSearchUrl(Summoner.PATH, "Sempify")
 //                , Summoner.class,
 //                headers,        //  headers passe
-//                onPostsLoaded,  //  on response listener
-//                onPostsError);  //  on error listener
-////        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
+//                onSummonerInfoLoaded,  //  on response listener
+//                onVolleyError);  //  on error listener
+////        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onSummonerInfoLoaded, onVolleyError);
 //        RiotRequestHelper.getInstance(getActivity()).addToRequestQueue(request);
         spinner.setVisibility(View.VISIBLE);
         String summonerName = mSearchInput.getText().toString().trim();
         RiotRequestHelper.getInstance(getActivity()).addGsonRequestToQueue(
                 RiotRequestHelper.createUrl(Summoner.PATH, summonerName),
                 Summoner.class,
-                onPostsLoaded,
-                onPostsError
+                onSummonerInfoLoaded,
+                onVolleyError
         );
 
         RiotRequestHelper.getInstance(getActivity()).addGetSummonerIconRequestToQueue(summonerName,
-                onImageLoaded, onPostsError);
+                onImageLoaded, onVolleyError);
 //        RiotRequestHelper.getInstance(getActivity()).getImageLoader()
 //                .get("https://avatar.leagueoflegends.com/euw/sempify.png",
 //                        new ImageLoader.ImageListener(){
@@ -195,7 +186,7 @@ public class SummonerSearchFragment extends Fragment {
         }
     };
 
-    private final Response.Listener<Summoner> onPostsLoaded = new Response.Listener<Summoner>() {
+    private final Response.Listener<Summoner> onSummonerInfoLoaded = new Response.Listener<Summoner>() {
         @Override
         public void onResponse(Summoner response) {
             Log.i(TAG, "ID" + response.id);
@@ -216,7 +207,7 @@ public class SummonerSearchFragment extends Fragment {
         }
     };
 
-    private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
+    private final Response.ErrorListener onVolleyError = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
             Log.e(TAG, "Volley Error: " + error.toString());
@@ -247,6 +238,8 @@ public class SummonerSearchFragment extends Fragment {
             int visible = savedInstanceState.getInt("info_visibility");
             mSummonerInfoBox.setVisibility(visible == View.VISIBLE ? View.VISIBLE : View.GONE);
         }
+        if(mSummonerName.getText().toString().isEmpty())
+            mSummonerInfoBox.setVisibility(View.GONE);
     }
 
     @Override

@@ -30,8 +30,8 @@ import java.util.HashMap;
 
 public class StopFragment_Volley_Working extends Fragment {
     //  Volley START
-    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
-            "/lol/summoner/v3/summoners/by-name/";
+//    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
+//            "/lol/summoner/v3/summoners/by-name/";
     private RequestQueue requestQueue;
     //  Volley END
 
@@ -65,15 +65,15 @@ public class StopFragment_Volley_Working extends Fragment {
 //        }
     }
 
-    //  VOLLEY START
-    private void fetchPosts() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
-        headers.put("Accept-Language", "en-US,en;q=0.8");
-        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded, onPostsError);
-//        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
-        requestQueue.add(request);
-    }
+//    //  VOLLEY START
+//    private void fetchPosts() {
+//        HashMap<String, String> headers = new HashMap<>();
+//        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
+//        headers.put("Accept-Language", "en-US,en;q=0.8");
+//        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded, onPostsError);
+////        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
+//        requestQueue.add(request);
+//    }
 
     private final Response.Listener<Summoner> onPostsLoaded = new Response.Listener<Summoner>() {
         @Override
@@ -98,7 +98,7 @@ public class StopFragment_Volley_Working extends Fragment {
 
         //  VOLLEY START
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        fetchPosts();
+//        fetchPosts();
         //  VOLLEY END
 
 

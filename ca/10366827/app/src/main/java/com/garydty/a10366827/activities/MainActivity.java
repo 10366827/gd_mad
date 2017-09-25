@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
     private static final String TAG_SUMMONER_SEARCH = "SummonerSearchFragment";
     private static final String TAG_STOP_FRAGMENT = "StopFragment";
-    private CameraFragment mCameraFragment;
+//    private CameraFragment mCameraFragment;
     private SummonerSearchFragment mSummonerFragment;
     private StopFragment mStopFragment;
     private int lastItemSelected;
@@ -55,16 +55,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-////                        .setAction("Action", null).show();
-//
-//            }
-//        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -74,18 +64,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-//        navigationView.setCheckedItem(R.id.nav_view_routes);
     }
-
-//    public void replaceFragment(Fragment fragment) {
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.fragment_holder, fragment);
-////        fragmentTransaction.addToBackStack(fragment.toString());
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
-//        fragmentTransaction.commit();
-//    }
 
     @Override
     public void onBackPressed() {
@@ -174,15 +153,15 @@ public class MainActivity extends AppCompatActivity
 
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_holder, mSummonerFragment, TAG_SUMMONER_SEARCH);
-        fragmentTransaction.addToBackStack(TAG_SUMMONER_SEARCH);
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+//        fragmentTransaction.addToBackStack(TAG_SUMMONER_SEARCH);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
 
 //        replaceFragment(mSummonerFragment);
     }
 
     private void loadStopFragment(){
-        getSupportActionBar().setTitle("Summoner search...");
+        getSupportActionBar().setTitle("Item search...");
         FragmentManager fm = getSupportFragmentManager();
         mStopFragment = (StopFragment)fm.findFragmentByTag(TAG_STOP_FRAGMENT);
         // create the fragment and data the first time
@@ -197,34 +176,19 @@ public class MainActivity extends AppCompatActivity
         }
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_holder, mStopFragment, TAG_STOP_FRAGMENT);
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+//        fragmentTransaction.addToBackStack(TAG_STOP_FRAGMENT);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
-
-
 //        replaceFragment(mStopFragment);
     }
 
     @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     public void loadCameraFragment(){
         FragmentManager fm = getSupportFragmentManager();
-        mCameraFragment = (CameraFragment) fm.findFragmentByTag(TAG_CAMERA_FRAGMENT);
-        // create the fragment and data the first time
-        if (mCameraFragment == null) {
-            Log.i("LoadFragment", "CameraFragment");
-            // add the fragment
-            mCameraFragment = CameraFragment.newInstance();
-//            fm.beginTransaction().add(mCameraFragment, TAG_CAMERA_FRAGMENT).commit();
-//            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
-//            // load data from a data source or perform any calculation
-//            mRetainedFragment.setData(loadMyData());
-        }
-
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mCameraFragment, TAG_CAMERA_FRAGMENT);
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.replace(R.id.fragment_holder, CameraFragment.newInstance());
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
-
-//        replaceFragment(CameraFragment.newInstance());
     }
 
     @Override
@@ -254,20 +218,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-//    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//    void showRationaleForStorage(final PermissionRequest request) {
-//        showRationaleDialog(R.string.permission_storage_rationale, request);
-//    }
-
     @OnPermissionDenied({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     void onStorageDenied() {
-        // NOTE: Deal with a denied permission, e.g. by showing specific UI
-        // or disabling certain functionality
-
         Toast.makeText(this, R.string.permission_camera_denied, Toast.LENGTH_SHORT).show();
     }
 
@@ -278,8 +233,6 @@ public class MainActivity extends AppCompatActivity
 
     @OnShowRationale({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     void showRationaleForCamera(PermissionRequest request) {
-        // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
-        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.permission_camera_rationale, request);
     }
 }

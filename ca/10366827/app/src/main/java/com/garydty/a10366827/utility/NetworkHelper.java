@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class NetworkHelper
 {
-    public static String ENDPOINT_HOST = "https://euw1.api.riotgames.com";
-    public static final String API_KEY = BuildConfig.API_KEY;
+//    public static String ENDPOINT_HOST = "https://euw1.api.riotgames.com";
+//    public static final String API_KEY = BuildConfig.API_KEY;
 
     private static String getRequestDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoL Yoke</string>
+    <string name="app_name">League Helper</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -22,7 +22,7 @@
     <string name="button_deny">Deny</string>
     <string name="permission_camera_rationale">Camera Permissions Required</string>
     <string name="permission_storage_rationale">Permission to write to external storage required</string>
-    <string name="permission_camera_never_ask_again">Camera permission will never be asked for again...</string>
+    <string name="permission_camera_never_ask_again">Camera permission will never be asked for again…</string>
 
     <string name="title_activity_preview_image_before_upload">PreviewImageBeforeUploadActivity
     </string>

@@ -32,8 +32,8 @@ public class SummonerFragment_bkup extends Fragment implements SummonerChosenLis
     private ListView mListView;
 
     //  Volley START
-    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
-            "/lol/summoner/v3/summoners/by-name/";
+//    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
+//            "/lol/summoner/v3/summoners/by-name/";
 //    private static RequestQueue requestQueue;
     //  Volley END
 
@@ -65,7 +65,7 @@ public class SummonerFragment_bkup extends Fragment implements SummonerChosenLis
         super.onViewCreated(view, savedInstanceState);
         //  VOLLEY END
         Log.i("test", "onViewCreated");
-        fetchPosts();
+//        fetchPosts();
 
 //        if(mAdapter == null){
 ////            ArrayList<Route> tmp = new ArrayList<Route>();
@@ -130,15 +130,15 @@ public class SummonerFragment_bkup extends Fragment implements SummonerChosenLis
 
 
     //  VOLLEY START
-    private void fetchPosts() {
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
-        headers.put("Accept-Language", "en-US,en;q=0.8");
-        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded,
-                onPostsError);
-//        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
-        RiotRequestHelper.getInstance(getActivity()).getRequestQueue().add(request);
-    }
+//    private void fetchPosts() {
+//        HashMap<String, String> headers = new HashMap<>();
+//        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
+//        headers.put("Accept-Language", "en-US,en;q=0.8");
+//        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded,
+//                onPostsError);
+////        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
+//        RiotRequestHelper.getInstance(getActivity()).getRequestQueue().add(request);
+//    }
 
     private final Response.Listener<Summoner> onPostsLoaded = new Response.Listener<Summoner>() {
         @Override

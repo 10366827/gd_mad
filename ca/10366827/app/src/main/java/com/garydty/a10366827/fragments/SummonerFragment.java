@@ -32,8 +32,8 @@ public class SummonerFragment extends Fragment implements SummonerChosenListener
     private ListView mListView;
 
     //  Volley START
-    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
-            "/lol/summoner/v3/summoners/by-name/";
+//    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
+//            "/lol/summoner/v3/summoners/by-name/";
 //    private static RequestQueue requestQueue;
     //  Volley END
 
@@ -132,12 +132,12 @@ public class SummonerFragment extends Fragment implements SummonerChosenListener
     //  VOLLEY START
     private void fetchPosts() {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
+//        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
         headers.put("Accept-Language", "en-US,en;q=0.8");
-        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded,
-                onPostsError);
+//        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded,
+//                onPostsError);
 //        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
-        RiotRequestHelper.getInstance(getActivity()).addToRequestQueue(request);
+//        RiotRequestHelper.getInstance(getActivity()).addToRequestQueue(request);
     }
 
     private final Response.Listener<Summoner> onPostsLoaded = new Response.Listener<Summoner>() {
