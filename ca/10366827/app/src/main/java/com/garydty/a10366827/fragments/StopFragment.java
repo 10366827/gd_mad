@@ -48,7 +48,7 @@ public class StopFragment extends Fragment {
         }
         else{
             try {
-                stopID.setText(mJson.getString("stopid"));
+                stopID.setText("" + mJson.getLong("summonerLevel"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -112,12 +112,15 @@ public class StopFragment extends Fragment {
             JSONParser parser = new JSONParser();
             JSONObject json = null;
             try {
-                json = parser.getJSONFromUrl("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=7602&format=json");
+//                json = parser.getJSONFromUrl("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=7602&format=json");
 //                result = json.getString("stopid");
+                json = parser.getJSONFromUrl(
+                        "https://euw1.api.riotgames.com/lol/summoner/v3/summoners/by-name/Sempify"
+                );
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
-            Log.i(getClass().getSimpleName(), "result: " + result);
+
             return json;
         }
 
@@ -126,7 +129,7 @@ public class StopFragment extends Fragment {
             if(result != null){
                 StopFragment.mJson = result;
                 try {
-                    stopID.setText(mJson.getString("stopid"));
+                    stopID.setText("" + mJson.getLong("summonerLevel"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
