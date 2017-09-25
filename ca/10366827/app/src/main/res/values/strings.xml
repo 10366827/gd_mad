@@ -35,5 +35,16 @@
     <string name="title_activity_picture_confirmation">PictureConfirmationActivity</string>
     <string name="_10366827">10366827</string>
     <string name="league_of_legends_helper">League of Legends Helper</string>
+    <string name="search">search</string>
+    <string name="summoner_name_hint">summoner name...</string>
     <!--<string name="timetables">Timetables</string>-->
+
+    <string-array name="regions">
+        <item>EU West</item>
+        <item>EU North</item>
+        <item>NA</item>
+        <item>Korea</item>
+        <item>Japan</item>
+        <item>Russia</item>
+    </string-array>
 </resources>

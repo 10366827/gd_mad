@@ -25,6 +25,7 @@ import com.garydty.a10366827.R;
 import com.garydty.a10366827.fragments.CameraFragment;
 import com.garydty.a10366827.fragments.SummonerFragment;
 import com.garydty.a10366827.fragments.StopFragment;
+import com.garydty.a10366827.fragments.SummonerSearchFragment;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
 
 import permissions.dispatcher.NeedsPermission;
@@ -40,10 +41,10 @@ public class MainActivity extends AppCompatActivity
 
     private static final String LAST_ITEM = "last_item_selected";
     private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
-    private static final String TAG_ROUTES_FRAGMENT = "SummonerFragment";
+    private static final String TAG_SUMMONER_SEARCH = "SummonerSearchFragment";
     private static final String TAG_STOP_FRAGMENT = "StopFragment";
     private CameraFragment mCameraFragment;
-    private SummonerFragment mSummonerFragment;
+    private SummonerSearchFragment mSummonerFragment;
     private StopFragment mStopFragment;
     private int lastItemSelected;
 
@@ -77,14 +78,14 @@ public class MainActivity extends AppCompatActivity
 //        navigationView.setCheckedItem(R.id.nav_view_routes);
     }
 
-    public void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, fragment);
-//        fragmentTransaction.addToBackStack(fragment.toString());
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
-        fragmentTransaction.commit();
-    }
+//    public void replaceFragment(Fragment fragment) {
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.fragment_holder, fragment);
+////        fragmentTransaction.addToBackStack(fragment.toString());
+//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+//        fragmentTransaction.commit();
+//    }
 
     @Override
     public void onBackPressed() {
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         lastItemSelected = id;
         if(id == R.id.nav_view_routes){
-            loadRoutesFragment();
+            loadSummonerSearchFragment();
         }
         else if(id == R.id.nav_view_stop){
             loadStopFragment();
@@ -149,35 +150,31 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //No call for super(). Bug on API Level > 11.
         outState.putInt(LAST_ITEM, lastItemSelected);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
         // Restore state of menu
-
+        if(savedInstanceState != null){
+            // navigationView.setCheckedItem(R.id.nav_view_routes);
+        }
     }
 
-    private void loadRoutesFragment(){
+    private void loadSummonerSearchFragment(){
+        getSupportActionBar().setTitle("Summoner search...");
         FragmentManager fm = getSupportFragmentManager();
-        mSummonerFragment = (SummonerFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
-
+        mSummonerFragment = (SummonerSearchFragment)fm.findFragmentByTag(TAG_SUMMONER_SEARCH);
 
         // create the fragment and data the first time
-        if (mSummonerFragment == null) {
-            Log.i("LoadFragment", "SummonerFragment");
-            // add the fragment
-            mSummonerFragment = SummonerFragment.newInstance();
-//            fragmentTransaction.addToBackStack(TAG_ROUTES_FRAGMENT);
-//            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
-//            // load data from a data source or perform any calculation
-//            mRetainedFragment.setData(loadMyData());
-        }
+        if (mSummonerFragment == null)
+            mSummonerFragment = SummonerSearchFragment.newInstance();
+
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mSummonerFragment, TAG_ROUTES_FRAGMENT);
+        fragmentTransaction.replace(R.id.fragment_holder, mSummonerFragment, TAG_SUMMONER_SEARCH);
+        fragmentTransaction.addToBackStack(TAG_SUMMONER_SEARCH);
 //        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
 
@@ -185,6 +182,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadStopFragment(){
+        getSupportActionBar().setTitle("Summoner search...");
         FragmentManager fm = getSupportFragmentManager();
         mStopFragment = (StopFragment)fm.findFragmentByTag(TAG_STOP_FRAGMENT);
         // create the fragment and data the first time

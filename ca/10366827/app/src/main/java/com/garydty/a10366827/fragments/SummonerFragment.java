@@ -12,19 +12,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.adapters.SummonerAdapter;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
 import com.garydty.a10366827.interfaces.SummonerChosenListener;
-import com.garydty.a10366827.models.Route;
 import com.garydty.a10366827.models.Summoner;
 import com.garydty.a10366827.utility.GsonRequest;
 import com.garydty.a10366827.utility.NetworkHelper;
-import com.garydty.a10366827.utility.RiotRequestQueue;
+import com.garydty.a10366827.utility.RiotRequestHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,7 +118,7 @@ public class SummonerFragment extends Fragment implements SummonerChosenListener
     }
 
     @Override
-    public void onSummonerChosen(Route route) {
+    public void onSummonerChosen(Summoner summoner) {
 //        Toast.makeText(getContext(), route.routeNumber, Toast.LENGTH_SHORT).show();
     }
 
@@ -140,7 +137,7 @@ public class SummonerFragment extends Fragment implements SummonerChosenListener
         GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded,
                 onPostsError);
 //        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
-        RiotRequestQueue.getInstance(getActivity()).getRequestQueue().add(request);
+        RiotRequestHelper.getInstance(getActivity()).addToRequestQueue(request);
     }
 
     private final Response.Listener<Summoner> onPostsLoaded = new Response.Listener<Summoner>() {
