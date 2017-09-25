@@ -12,9 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
+import com.garydty.a10366827.models.Summoner;
+import com.garydty.a10366827.utility.GsonRequest;
 import com.garydty.a10366827.utility.JSONParser;
+import com.garydty.a10366827.utility.NetworkHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +34,12 @@ import java.util.HashMap;
 import javax.net.ssl.HttpsURLConnection;
 
 public class StopFragment extends Fragment {
+    //  Volley START
+    private static final String ENDPOINT = NetworkHelper.ENDPOINT_HOST +
+            "/lol/summoner/v3/summoners/by-name/";
+    private RequestQueue requestQueue;
+    //  Volley END
+
     private OnFragmentInteractionListener mListener;
     private static JSONObject mJson;
 
@@ -41,23 +56,57 @@ public class StopFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        stopID = (TextView) view.findViewById(R.id.stop_test_text);
-        if(mJson == null){
-            if(stopID != null)
-                new UserLoginTask().execute();
-        }
-        else{
-            try {
-                stopID.setText("" + mJson.getLong("summonerLevel"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+//        stopID = (TextView) view.findViewById(R.id.stop_test_text);
+//        if(mJson == null){
+//            if(stopID != null)
+//                new UserLoginTask().execute();
+//        }
+//        else{
+//            try {
+//                stopID.setText("" + mJson.getLong("summonerLevel"));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
+
+    //  VOLLEY START
+    private void fetchPosts() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
+        headers.put("Accept-Language", "en-US,en;q=0.8");
+        GsonRequest<Summoner> request = new GsonRequest<>((ENDPOINT + "Sempify"), Summoner.class,headers, onPostsLoaded, onPostsError);
+//        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onPostsLoaded, onPostsError);
+        requestQueue.add(request);
+    }
+
+    private final Response.Listener<Summoner> onPostsLoaded = new Response.Listener<Summoner>() {
+        @Override
+        public void onResponse(Summoner response) {
+            Log.i("PostActivity", response.name);
+            Log.i("PostActivity", "AccountID: " + response.accountId);
+            Log.i("PostActivity", "Level: " + response.summonerLevel);
+        }
+    };
+
+    private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e("PostActivity", error.toString());
+        }
+    };
+    //  VOLLEY END
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //  VOLLEY START
+        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        fetchPosts();
+        //  VOLLEY END
+
+
 //        if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);

@@ -9,6 +9,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.garydty.a10366827.BuildConfig;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +20,9 @@ import java.util.Map;
 
 public class NetworkHelper
 {
+    public static String ENDPOINT_HOST = "https://euw1.api.riotgames.com";
+    public static final String API_KEY = BuildConfig.API_KEY;
+
     private static String getRequestDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;

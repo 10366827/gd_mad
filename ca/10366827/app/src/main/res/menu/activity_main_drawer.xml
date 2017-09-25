@@ -10,7 +10,7 @@
         <item
             android:id="@+id/nav_view_routes"
             android:icon="@android:drawable/ic_menu_directions"
-            android:title="@string/view_bus_routes" />
+            android:title="@string/find_summoner" />
 
         <item
             android:id="@+id/nav_view_stop"
@@ -20,7 +20,7 @@
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/eye_in_the_bus" />
+            android:title="@string/scoreboard_pic" />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"

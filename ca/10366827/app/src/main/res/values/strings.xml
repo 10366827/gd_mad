@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">BUSy Travel Yoke</string>
+    <string name="app_name">LoL Yoke</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="eye_in_the_bus">\"Eye in the bus!\"</string>
-    <string name="gallery">View Journey Pictures</string>
-    <string name="view_bus_routes">Bus Routes</string>
+    <string name="scoreboard_pic">Snap Your Scoreboard</string>
+    <string name="gallery">View Your Scoreboards</string>
+    <string name="find_summoner">Search for Summoner</string>
     <string name="find_stop_info">Search By Stop</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -33,5 +33,7 @@
     <string name="user_image">user image</string>
 
     <string name="title_activity_picture_confirmation">PictureConfirmationActivity</string>
+    <string name="_10366827">10366827</string>
+    <string name="league_of_legends_helper">League of Legends Helper</string>
     <!--<string name="timetables">Timetables</string>-->
 </resources>
