@@ -6,109 +6,120 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.garydty.a10366827.models.Summoner;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Gary Doherty on 18/09/2017.
  */
-public class DBHelper {//public class DBHelper extends SQLiteOpenHelper {
-//    private static final String DATABASE_NAME = "busyoke.db";
-//    private static final int DATABASE_VERSION = 1;
-//
-//    public DBHelper(Context context){
-//        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-//    }
-//
-//    @Override
-//    public void onCreate(SQLiteDatabase db) {
-//        db.execSQL(LureTable.CREATE_TABLE);
-//    }
-//
-//    @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS " + LureTable.TABLE_NAME);
-//        onCreate(db);
-//    }
-//
-//    public void clearDatabase(){
-//        SQLiteDatabase db = getWritableDatabase();
-//        db.execSQL("DELETE FROM " + LureTable.TABLE_NAME);
-//        db.close();
-//    }
-//
-//    public void addLure(String id, String name, Date time){
-//        SQLiteDatabase db = getWritableDatabase();
-//        ContentValues cv = new ContentValues();
-//        cv.put(LureTable.ID, id);
-//        cv.put(LureTable.NAME, name);
-//        cv.put(LureTable.TIME, time.getTime());
-//        db.insert(LureTable.TABLE_NAME, null, cv);
-//        db.close();
-//    }
-//
-//    public boolean containsLure(String id){
-//        SQLiteDatabase db = getReadableDatabase();
-//        String query = "SELECT * FROM " + LureTable.TABLE_NAME + " WHERE " +
-//                LureTable.ID + "=\"" + id + "\"";
-//        Cursor cursor = db.rawQuery(query, null);
-//        boolean contains = cursor.moveToFirst();
-//        cursor.close();
-//        db.close();
-//        return contains;
-//    }
-//
-//    public void removeLure(String id){
-//        SQLiteDatabase db = getWritableDatabase();
-//        db.delete(LureTable.TABLE_NAME, LureTable.ID + "=\"" + id + "\"", null);
-//        db.close();
-//    }
-//
-////    public void putLures(HashMap<String, Date> lures){
-////        if(lures == null)
-////            return;
-////
-////        Set<String> keys = lures.keySet();
-////        for(String key : keys)
-////            addLure(key, lures.get(key));
-////    }
-//
-//    public HashMap<String, Date> getLures(){
-//        SQLiteDatabase db = getReadableDatabase();
-//        String query = "SELECT * FROM " + LureTable.TABLE_NAME;
-//        Cursor cursor = db.rawQuery(query, null);
-//        HashMap<String, Date> lures = new HashMap<String, Date>();
-//        if(cursor == null)
-//            return lures;
-//
-//        if(cursor.moveToFirst()) {
-//            do {
-//                String id = cursor.getString(0);
-////                String name = cursor.getString(1);
-//                long time = cursor.getLong(2);
-//                Date tmp  = new Date(time);
-//                lures.put(id, tmp);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        db.close();
-//        return lures;
-//    }
-//
-//    private class StopTable {
-//
-//    }
-//
-//    private class RouteTable {
-//        static final String TABLE_NAME = "RouteTimetable";
-//
-//        //  Columns
-//        static final String ID = "RouteNumber";
-//        static final String NAME = "name";
-//        static final String TIME = "time";
-//
-//        // Table Create Statement
-//        public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
-//                + TABLE_NAME + "(" + ID + " TEXT PRIMARY KEY," + NAME +" TEXT," + TIME + " LONG)";
-//    }
+public class DBHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "leagueyoke.db";
+    private static final int DATABASE_VERSION = 1;
+
+    public DBHelper(Context context){
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(SummonerTable.CREATE_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + SummonerTable.TABLE_NAME);
+        onCreate(db);
+    }
+
+    public void clearDatabase(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM " + SummonerTable.TABLE_NAME);
+        db.close();
+    }
+
+    public void addSummoner(Summoner summoner){
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(SummonerTable.ID, summoner.id);
+        cv.put(SummonerTable.NAME, summoner.name);
+        cv.put(SummonerTable.ACCOUNT_ID, summoner.accountId);
+        cv.put(SummonerTable.ICON, summoner.profileIconId);
+        cv.put(SummonerTable.LEVEL, summoner.summonerLevel);
+        cv.put(SummonerTable.REV_DATE, summoner.revisionDate);
+
+        db.insert(SummonerTable.TABLE_NAME, null, cv);
+        db.close();
+    }
+
+    public boolean exists(Summoner s){
+        if(s == null || s.name == null)
+            return false;
+
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + SummonerTable.TABLE_NAME + " WHERE " +
+                SummonerTable.NAME + "=\"" + s.name + "\"";
+        Cursor cursor = db.rawQuery(query, null);
+        boolean contains = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return contains;
+    }
+
+    public void removeSummoner(Summoner s){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(SummonerTable.TABLE_NAME, SummonerTable.ID + "=\"" + s.id + "\"", null);
+        db.close();
+    }
+
+    public ArrayList<Summoner> getAllStoredSummoners(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + SummonerTable.TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<Summoner> summoners = new ArrayList<>();
+        if(cursor == null)
+            return summoners;
+
+        if(cursor.moveToFirst()) {
+            do {
+                Summoner s = new Summoner();
+                s.id = cursor.getLong(0);
+                s.name = cursor.getString(1);
+                s.profileIconId = cursor.getInt(2);
+                s.revisionDate = cursor.getLong(3);
+                s.accountId = cursor.getLong(4);
+                s.summonerLevel = cursor.getLong(5);
+                summoners.add(s);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return summoners;
+    }
+
+    private class SummonerTable {
+        static final String TABLE_NAME = "Summoner";
+
+        //  Columns
+        static final String ID = "id";
+        static final String NAME = "name";
+        static final String ICON = "profileIconId";
+        static final String REV_DATE = "revisionDate";
+        static final String ACCOUNT_ID = "accountId";
+        static final String LEVEL = "summonerLevel";
+
+        // Table Create Statement
+        public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_NAME + "(" +
+                ID + " LONG PRIMARY KEY," +
+                NAME +" TEXT," +
+                ICON + " INT," +
+                REV_DATE + " LONG," +
+                ACCOUNT_ID + " LONG,"
+                + LEVEL + " LONG)";
+    }
 }
