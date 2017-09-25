@@ -21,13 +21,13 @@ public class RiotRequestQueue  {
     public static String ENDPOINT = "https://euw1.api.riotgames.com";
     private static RiotRequestQueue mInstance;// Instantiate the cache
     private static Context mCtx;
+    private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
-    private RequestQueue mRequestQueue;
-//    private Cache mCache;
-
     private RiotRequestQueue(Context ctx){
-        mRequestQueue = Volley.newRequestQueue(ctx);
+        mCtx = ctx;
+//        mRequestQueue = Volley.newRequestQueue(ctx);
+        mRequestQueue = getRequestQueue();
 //        mCache = new DiskBasedCache(ctx.getCacheDir(), 1024 * 1024);
 
         mImageLoader = new ImageLoader(mRequestQueue,
@@ -56,8 +56,6 @@ public class RiotRequestQueue  {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
         }
         return mRequestQueue;
@@ -70,7 +68,4 @@ public class RiotRequestQueue  {
     public ImageLoader getImageLoader() {
         return mImageLoader;
     }
-
-
-
 }

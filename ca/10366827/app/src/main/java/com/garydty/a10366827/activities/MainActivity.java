@@ -3,19 +3,14 @@ package com.garydty.a10366827.activities;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,12 +19,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.fragments.CameraFragment;
-import com.garydty.a10366827.fragments.RoutesFragment;
+import com.garydty.a10366827.fragments.SummonerFragment;
 import com.garydty.a10366827.fragments.StopFragment;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
 
@@ -46,10 +40,10 @@ public class MainActivity extends AppCompatActivity
 
     private static final String LAST_ITEM = "last_item_selected";
     private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
-    private static final String TAG_ROUTES_FRAGMENT = "RoutesFragment";
+    private static final String TAG_ROUTES_FRAGMENT = "SummonerFragment";
     private static final String TAG_STOP_FRAGMENT = "StopFragment";
     private CameraFragment mCameraFragment;
-    private RoutesFragment mRoutesFragment;
+    private SummonerFragment mSummonerFragment;
     private StopFragment mStopFragment;
     private int lastItemSelected;
 
@@ -169,25 +163,25 @@ public class MainActivity extends AppCompatActivity
 
     private void loadRoutesFragment(){
         FragmentManager fm = getSupportFragmentManager();
-        mRoutesFragment = (RoutesFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
+        mSummonerFragment = (SummonerFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
 
 
         // create the fragment and data the first time
-        if (mRoutesFragment == null) {
-            Log.i("LoadFragment", "RoutesFragment");
+        if (mSummonerFragment == null) {
+            Log.i("LoadFragment", "SummonerFragment");
             // add the fragment
-            mRoutesFragment = RoutesFragment.newInstance();
+            mSummonerFragment = SummonerFragment.newInstance();
 //            fragmentTransaction.addToBackStack(TAG_ROUTES_FRAGMENT);
 //            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
 //            // load data from a data source or perform any calculation
 //            mRetainedFragment.setData(loadMyData());
         }
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mRoutesFragment, TAG_ROUTES_FRAGMENT);
+        fragmentTransaction.replace(R.id.fragment_holder, mSummonerFragment, TAG_ROUTES_FRAGMENT);
 //        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
 
-//        replaceFragment(mRoutesFragment);
+//        replaceFragment(mSummonerFragment);
     }
 
     private void loadStopFragment(){

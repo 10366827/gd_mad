@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.garydty.a10366827.fragments.RoutesFragment">
+    tools:context="com.garydty.a10366827.fragments.SummonerFragment">
 
     <ListView
-        android:id="@+id/routes_list"
+        android:id="@+id/summoners_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@android:color/transparent"

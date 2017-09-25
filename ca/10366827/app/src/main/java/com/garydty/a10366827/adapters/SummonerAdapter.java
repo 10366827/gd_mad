@@ -6,9 +6,6 @@ package com.garydty.a10366827.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +13,20 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.garydty.a10366827.R;
-import com.garydty.a10366827.interfaces.RouteHandler;
-import com.garydty.a10366827.models.Route;
+import com.garydty.a10366827.interfaces.SummonerChosenListener;
+import com.garydty.a10366827.models.Summoner;
 
 import java.util.ArrayList;
 
-public class RouteAdapter extends ArrayAdapter<Route> {
-    ArrayList<Route> routeList;
-    RouteHandler routeHandler;
-    private Activity activity;
-//    private AcceptFriendTask acceptFriendTask;
+public class SummonerAdapter extends ArrayAdapter<Summoner> {
+    private ArrayList<Summoner> mSummonerList;
+    private SummonerChosenListener mSummonerListener;
 
-    public RouteAdapter(Context context, int textViewResourceId, ArrayList<Route> list,
-                          RouteHandler routeHandler, Activity activity) {
+    public SummonerAdapter(Context context, int textViewResourceId, ArrayList<Summoner> list,
+                           SummonerChosenListener mSummonerListener, Activity activity) {
         super(context, textViewResourceId, list);
-        this.routeList = list;
-        this.routeHandler = routeHandler;
-        this.activity = activity;
+        this.mSummonerList = list;
+        this.mSummonerListener = mSummonerListener;
     }
 
     @Override
@@ -42,13 +36,13 @@ public class RouteAdapter extends ArrayAdapter<Route> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        final Route route = routeList.get(position);
+        final Summoner summoner = mSummonerList.get(position);
 
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.route_item, null);
 
         TextView routeText = (TextView) v.findViewById(R.id.route_item_text);
-        routeText.setText("Route " + route.routeNumber);
+        routeText.setText("Route " + summoner.name);
 
         // the view must be returned to our activity
         return v;
@@ -56,29 +50,29 @@ public class RouteAdapter extends ArrayAdapter<Route> {
 
 //    public static void sortList(){
 //        if(!isNullOrEmpty())
-//            Collections.sort(routeList);
+//            Collections.sort(mSummonerList);
 //    }
 
-    public Route get(int index){
-        return routeList.get(index);
+    public Summoner get(int index){
+        return mSummonerList.get(index);
     }
 
-    public void put(Route route){
-        routeList.add(route);
+    public void put(Summoner summoner){
+        mSummonerList.add(summoner);
         notifyDataSetChanged();
     }
 
 //    public boolean isNullOrEmpty(){
-//        return routeList == null || routeList.isEmpty();
+//        return mSummonerList == null || mSummonerList.isEmpty();
 //    }
 
 //    public int size(){
-//        return routeList != null ? routeList.size() : 0;
+//        return mSummonerList != null ? mSummonerList.size() : 0;
 //    }
 //
 //    public int getIndexOf(Route route){
-//        for(int i = 0; i < routeList.size(); i++)
-//            if(routeList.get(i).routeNumber == route.routeNumber)
+//        for(int i = 0; i < mSummonerList.size(); i++)
+//            if(mSummonerList.get(i).routeNumber == route.routeNumber)
 //                return i;
 //
 //        return -1;
