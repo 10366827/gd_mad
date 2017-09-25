@@ -12,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.garydty.a10366827.BuildConfig;
 import com.garydty.a10366827.R;
@@ -113,5 +114,15 @@ public class RiotRequestHelper {
                 onError);
 
         addToRequestQueue(summonerIconRequest);
+    }
+
+    public void getRiotRSSFeed(Response.Listener<String> onResult, Response.ErrorListener onError){
+        addToRequestQueue(
+                new StringRequest(
+                    Request.Method.GET, "http://euw.leagueoflegends.com/en/rss.xml",
+                    onResult,
+                    onError
+                )
+        );
     }
 }

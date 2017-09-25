@@ -19,14 +19,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.garydty.a10366827.R;
+import com.garydty.a10366827.fragments.ArticleFragment;
 import com.garydty.a10366827.fragments.CameraFragment;
 import com.garydty.a10366827.fragments.SummonerFragment;
 import com.garydty.a10366827.fragments.StopFragment;
 import com.garydty.a10366827.fragments.SummonerSearchFragment;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
+import com.garydty.a10366827.models.Summoner;
+import com.garydty.a10366827.utility.GsonRequest;
+import com.garydty.a10366827.utility.RiotRequestHelper;
+import com.prof.rssparser.Article;
+import com.prof.rssparser.Parser;
+
+import java.util.ArrayList;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -39,13 +52,15 @@ import permissions.dispatcher.RuntimePermissions;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
+    private static final String TAG = "MainActivity";
     private static final String LAST_ITEM = "last_item_selected";
-    private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
+//    private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
     private static final String TAG_SUMMONER_SEARCH = "SummonerSearchFragment";
     private static final String TAG_STOP_FRAGMENT = "StopFragment";
+    private static final String TAG_ARTICLE_FRAGMENT = "ArticleFragment";
 //    private CameraFragment mCameraFragment;
     private SummonerSearchFragment mSummonerFragment;
-    private StopFragment mStopFragment;
+    private ArticleFragment mArticleFragment;
     private int lastItemSelected;
 
     @Override
@@ -63,8 +78,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
+
+    private final Response.Listener<String> onRSSFeedRetrieved = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String xmlResponse) {
+
+        }
+    };
+
+    private final Response.ErrorListener onVolleyError = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e(TAG, "Volley Error: " + error.toString());
+        }
+    };
 
     @Override
     public void onBackPressed() {
@@ -161,21 +189,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadStopFragment(){
-        getSupportActionBar().setTitle("Item search...");
+        getSupportActionBar().setTitle("News");
         FragmentManager fm = getSupportFragmentManager();
-        mStopFragment = (StopFragment)fm.findFragmentByTag(TAG_STOP_FRAGMENT);
+        mArticleFragment = (ArticleFragment)fm.findFragmentByTag(TAG_ARTICLE_FRAGMENT);
         // create the fragment and data the first time
-        if (mStopFragment == null) {
+        if (mArticleFragment == null) {
             Log.i("LoadFragment", "StopFragment");
             // add the fragment
-            mStopFragment = StopFragment.newInstance();
+            mArticleFragment = ArticleFragment.newInstance();
 //            fm.beginTransaction().add(mStopFragment, TAG_STOP_FRAGMENT).commit();
 //            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
 //            // load data from a data source or perform any calculation
 //            mRetainedFragment.setData(loadMyData());
         }
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mStopFragment, TAG_STOP_FRAGMENT);
+        fragmentTransaction.replace(R.id.fragment_holder, mArticleFragment, TAG_ARTICLE_FRAGMENT);
 //        fragmentTransaction.addToBackStack(TAG_STOP_FRAGMENT);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
