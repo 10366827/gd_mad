@@ -7,4 +7,5 @@
     <color name="black_overlay">#66000000</color>
     <color name="confirm_btn">#00AA00</color>
     <color name="cancel_btn">#AA0000</color>
+    <color name="app_background">#333333</color>
 </resources>

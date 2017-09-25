@@ -21,27 +21,38 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="17dp"
-                android:text="20/6/1991" />
+                android:text="20/6/1991"
+                android:textColor="@color/colorPrimary"/>
         </RelativeLayout>
 
         <TextView
             android:id="@+id/article_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TITLE"
-            android:textSize="25sp" />
+            android:textColor="#F0FFFF"
+            android:textSize="25sp"
+            android:layout_marginBottom="5dp"/>
 
         <TextView
-            android:id="@+id/article_description"
+        android:textColor="#FFF8DC"
+        android:id="@+id/article_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/article_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DESC" />
+            android:text="more..."
+            android:layout_marginStart="10dp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"/>
     </LinearLayout>
 </LinearLayout>

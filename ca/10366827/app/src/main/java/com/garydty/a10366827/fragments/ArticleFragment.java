@@ -1,6 +1,7 @@
 package com.garydty.a10366827.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,14 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.adapters.RSSArticleAdapter;
-import com.garydty.a10366827.adapters.SummonerAdapter;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
-import com.garydty.a10366827.interfaces.SummonerChosenListener;
-import com.garydty.a10366827.models.Summoner;
 import com.prof.rssparser.Article;
 import com.prof.rssparser.Parser;
 
@@ -67,7 +63,7 @@ public class ArticleFragment extends Fragment implements AdapterView.OnItemClick
                     mAdapter = new RSSArticleAdapter(getContext(), R.layout.article_item, list);
 
                     if (mListView == null)
-                        mListView = getActivity().findViewById(R.id.summoners_list);
+                        mListView = getActivity().findViewById(R.id.item_list);
                     mListView.setAdapter(mAdapter);
                     mListView.setOnItemClickListener(ArticleFragment.this);
                 }
@@ -80,7 +76,7 @@ public class ArticleFragment extends Fragment implements AdapterView.OnItemClick
             });
         }
         else if(mListView == null){
-            mListView = getActivity().findViewById(R.id.summoners_list);
+            mListView = getActivity().findViewById(R.id.item_list);
             mListView.setAdapter(mAdapter);
             mListView.setOnItemClickListener(ArticleFragment.this);
         }
@@ -121,5 +117,8 @@ public class ArticleFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         Article summoner = mAdapter.get(position);
+//        Toast.makeText(getContext(), summoner.getLink(), Toast.LENGTH_SHORT).show();
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(summoner.getLink()));
+        startActivity(browserIntent);
     }
 }

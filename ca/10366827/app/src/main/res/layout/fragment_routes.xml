@@ -5,7 +5,7 @@
     tools:context="com.garydty.a10366827.fragments.SummonerFragment">
 
     <ListView
-        android:id="@+id/summoners_list"
+        android:id="@+id/item_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@android:color/transparent"

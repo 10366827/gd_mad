@@ -19,9 +19,6 @@ import com.garydty.a10366827.adapters.SummonerAdapter;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
 import com.garydty.a10366827.interfaces.SummonerChosenListener;
 import com.garydty.a10366827.models.Summoner;
-import com.garydty.a10366827.utility.GsonRequest;
-import com.garydty.a10366827.utility.NetworkHelper;
-import com.garydty.a10366827.utility.RiotRequestHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,7 +145,7 @@ public class SummonerFragment extends Fragment implements SummonerChosenListener
             Log.i("PostActivity", "Level: " + response.summonerLevel);
 
             if(mListView == null)
-                mListView = getActivity().findViewById(R.id.summoners_list);
+                mListView = getActivity().findViewById(R.id.item_list);
 
             if(mAdapter == null){
                 Log.i("test", "instantiate adapter");
