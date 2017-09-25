@@ -4,12 +4,23 @@
     android:layout_height="match_parent"
     tools:context="com.garydty.a10366827.fragments.SummonerFragment">
 
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/rss_load_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="150dp"
+        />
+
     <ListView
         android:id="@+id/item_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@android:color/transparent"
-        android:padding="5sp"
-        android:dividerHeight="3sp" />
+        android:dividerHeight="3sp"
+        android:padding="5sp" />
 
 </FrameLayout>

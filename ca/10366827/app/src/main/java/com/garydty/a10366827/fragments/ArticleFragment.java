@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.adapters.RSSArticleAdapter;
@@ -54,6 +54,8 @@ public class ArticleFragment extends Fragment implements AdapterView.OnItemClick
             //url of RSS feed
             String riotRSSUrl = "http://euw.leagueoflegends.com/en/rss.xml";
             Parser parser = new Parser();
+            final ProgressBar progress = getActivity().findViewById(R.id.rss_load_progress);
+            progress.setVisibility(View.VISIBLE);
             parser.execute(riotRSSUrl);
             parser.onFinish(new Parser.OnTaskCompleted() {
 
@@ -61,7 +63,7 @@ public class ArticleFragment extends Fragment implements AdapterView.OnItemClick
                 public void onTaskCompleted(ArrayList<Article> list) {
                     Log.i(TAG, "XML Retrieved");
                     mAdapter = new RSSArticleAdapter(getContext(), R.layout.article_item, list);
-
+                    progress.setVisibility(View.GONE);
                     if (mListView == null)
                         mListView = getActivity().findViewById(R.id.item_list);
                     mListView.setAdapter(mAdapter);
@@ -86,7 +88,7 @@ public class ArticleFragment extends Fragment implements AdapterView.OnItemClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_routes, container, false);
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
