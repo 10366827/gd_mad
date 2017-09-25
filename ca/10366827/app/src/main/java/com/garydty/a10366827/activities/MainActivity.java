@@ -140,9 +140,10 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_camera) {
             MainActivityPermissionsDispatcher.loadCameraFragmentWithPermissionCheck(MainActivity.this);
-        } else if (id == R.id.nav_gallery) {
-            //  Handle the gallery action
         }
+//        else if (id == R.id.nav_gallery) {
+//            //  Handle the gallery action
+//        }
 
 //        else if (id == R.id.nav_share) {
 //

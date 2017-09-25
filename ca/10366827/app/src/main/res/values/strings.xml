@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="scoreboard_pic">Snap Your Scoreboard</string>
+    <string name="scoreboard_pic">Record Score</string>
     <string name="gallery">View Your Scoreboards</string>
     <string name="find_summoner">Search for Summoner</string>
     <string name="find_stop_info">Search By Stop</string>
@@ -37,6 +37,8 @@
     <string name="league_of_legends_helper">League of Legends Helper</string>
     <string name="search">search</string>
     <string name="summoner_name_hint">summoner name...</string>
+    <string name="latest_news">Latest News</string>
+    <string name="gary_doherty">Gary Doherty</string>
     <!--<string name="timetables">Timetables</string>-->
 
     <string-array name="regions">
