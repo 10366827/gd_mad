@@ -31,5 +31,7 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="user_image">user image</string>
+
+    <string name="title_activity_picture_confirmation">PictureConfirmationActivity</string>
     <!--<string name="timetables">Timetables</string>-->
 </resources>

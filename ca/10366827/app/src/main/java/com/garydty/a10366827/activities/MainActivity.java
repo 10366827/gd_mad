@@ -3,6 +3,8 @@ package com.garydty.a10366827.activities;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.garydty.a10366827.R;
@@ -41,12 +44,14 @@ import permissions.dispatcher.RuntimePermissions;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
+    private static final String LAST_ITEM = "last_item_selected";
     private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
     private static final String TAG_ROUTES_FRAGMENT = "RoutesFragment";
     private static final String TAG_STOP_FRAGMENT = "StopFragment";
     private CameraFragment mCameraFragment;
     private RoutesFragment mRoutesFragment;
     private StopFragment mStopFragment;
+    private int lastItemSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +60,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+////                        .setAction("Action", null).show();
+//
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -72,6 +78,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+//        navigationView.setCheckedItem(R.id.nav_view_routes);
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -120,7 +129,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        lastItemSelected = id;
         if(id == R.id.nav_view_routes){
             loadRoutesFragment();
         }
@@ -144,28 +153,38 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        //No call for super(). Bug on API Level > 11.
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //No call for super(). Bug on API Level > 11.
+        outState.putInt(LAST_ITEM, lastItemSelected);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore state of menu
+
+    }
 
     private void loadRoutesFragment(){
         FragmentManager fm = getSupportFragmentManager();
         mRoutesFragment = (RoutesFragment)fm.findFragmentByTag(TAG_ROUTES_FRAGMENT);
+
+
         // create the fragment and data the first time
         if (mRoutesFragment == null) {
             Log.i("LoadFragment", "RoutesFragment");
             // add the fragment
             mRoutesFragment = RoutesFragment.newInstance();
-            fm.beginTransaction().add(mRoutesFragment, TAG_ROUTES_FRAGMENT).commit();
+//            fragmentTransaction.addToBackStack(TAG_ROUTES_FRAGMENT);
 //            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
 //            // load data from a data source or perform any calculation
 //            mRetainedFragment.setData(loadMyData());
         }
-
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mRoutesFragment);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.replace(R.id.fragment_holder, mRoutesFragment, TAG_ROUTES_FRAGMENT);
+//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
 
 //        replaceFragment(mRoutesFragment);
@@ -179,14 +198,14 @@ public class MainActivity extends AppCompatActivity
             Log.i("LoadFragment", "StopFragment");
             // add the fragment
             mStopFragment = StopFragment.newInstance();
-            fm.beginTransaction().add(mStopFragment, TAG_STOP_FRAGMENT).commit();
+//            fm.beginTransaction().add(mStopFragment, TAG_STOP_FRAGMENT).commit();
 //            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
 //            // load data from a data source or perform any calculation
 //            mRetainedFragment.setData(loadMyData());
         }
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mStopFragment);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.replace(R.id.fragment_holder, mStopFragment, TAG_STOP_FRAGMENT);
+//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
 
 
@@ -198,19 +217,19 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         mCameraFragment = (CameraFragment) fm.findFragmentByTag(TAG_CAMERA_FRAGMENT);
         // create the fragment and data the first time
-        if (mRoutesFragment == null) {
+        if (mCameraFragment == null) {
             Log.i("LoadFragment", "CameraFragment");
             // add the fragment
             mCameraFragment = CameraFragment.newInstance();
-            fm.beginTransaction().add(mCameraFragment, TAG_CAMERA_FRAGMENT).commit();
+//            fm.beginTransaction().add(mCameraFragment, TAG_CAMERA_FRAGMENT).commit();
 //            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
 //            // load data from a data source or perform any calculation
 //            mRetainedFragment.setData(loadMyData());
         }
 
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, mCameraFragment);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        fragmentTransaction.replace(R.id.fragment_holder, mCameraFragment, TAG_CAMERA_FRAGMENT);
+//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
         fragmentTransaction.commit();
 
 //        replaceFragment(CameraFragment.newInstance());

@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.garydty.a10366827.R;
-import com.garydty.a10366827.activities.PreviewImageBeforeUploadActivity;
+import com.garydty.a10366827.activities.PictureConfirmationActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -129,7 +129,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     public void onPictureTaken(byte[] bytes, Camera camera) {
 //        new CameraDisplay.StorePhotoTask().execute(bytes);
         Toast.makeText(getContext(), "" + bytes.length, Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getContext(), PreviewImageBeforeUploadActivity.class);
+        Intent intent = new Intent(getContext(), PictureConfirmationActivity.class);
         intent.putExtra("picture", bytes);
         startActivity(intent);
 //        mCamera.startPreview();

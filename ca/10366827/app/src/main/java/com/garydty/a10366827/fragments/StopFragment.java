@@ -26,6 +26,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class StopFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    private static JSONObject mJson;
 
     public StopFragment() {
         // Required empty public constructor
@@ -41,8 +42,17 @@ public class StopFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         stopID = (TextView) view.findViewById(R.id.stop_test_text);
-        if(stopID != null)
-            new UserLoginTask().execute();
+        if(mJson == null){
+            if(stopID != null)
+                new UserLoginTask().execute();
+        }
+        else{
+            try {
+                stopID.setText(mJson.getString("stopid"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -89,13 +99,13 @@ public class StopFragment extends Fragment {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, String> {
+    public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
 
         UserLoginTask() {
         }
 
         @Override
-        protected String doInBackground(Void... param) {
+        protected JSONObject doInBackground(Void... param) {
             String result = null;
 
 
@@ -103,18 +113,23 @@ public class StopFragment extends Fragment {
             JSONObject json = null;
             try {
                 json = parser.getJSONFromUrl("https://data.dublinked.ie/cgi-bin/rtpi/realtimebusinformation?stopid=7602&format=json");
-                result = json.getString("stopid");
+//                result = json.getString("stopid");
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
             Log.i(getClass().getSimpleName(), "result: " + result);
-            return result;
+            return json;
         }
 
         @Override
-        protected void onPostExecute(final String result) {
+        protected void onPostExecute(final JSONObject result) {
             if(result != null){
-                stopID.setText(result);
+                StopFragment.mJson = result;
+                try {
+                    stopID.setText(mJson.getString("stopid"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             Log.i("StopFragment", "Completed request.");
         }

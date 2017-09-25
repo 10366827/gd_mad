@@ -24,18 +24,15 @@ import com.garydty.a10366827.models.Route;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoutesFragment extends Fragment implements RouteHandler{
-    private RouteAdapter adapter;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class RoutesFragment extends Fragment implements RouteHandler, AdapterView.OnItemClickListener{
+    private static RouteAdapter adapter;
+    private static ListView mListView;
 
     private OnFragmentInteractionListener mListener;
 
     public RoutesFragment() {
         // Required empty public constructor
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
 
     public static RoutesFragment newInstance() {
@@ -43,12 +40,12 @@ public class RoutesFragment extends Fragment implements RouteHandler{
         return fragment;
     }
 
-//    public void setData(List<Route> adapter){
-//        this.adapter.setL
+//    public void setData(List<Route> data){
+//
 //    }
-
+//
 //    public RouteAdapter getData(){
-//        return adapter;
+//        return adapter.;
 //    }
 
     @Override
@@ -60,24 +57,20 @@ public class RoutesFragment extends Fragment implements RouteHandler{
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<Route> tmp = new ArrayList<Route>();
-        tmp.add(new Route(1));
-        tmp.add(new Route(2));
-        tmp.add(new Route(3));
-        tmp.add(new Route(4));
-        tmp.add(new Route(5));
-        adapter = new RouteAdapter(getActivity().getApplicationContext(), R.id.route_item_text, tmp, this, getActivity());
-        ListView listView = (ListView) getActivity().findViewById(R.id.routes_list);
-        if(listView != null) {
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Route tmp = adapter.get(position);
-                    Toast.makeText(getContext(), "Route " + tmp.routeNumber, Toast.LENGTH_SHORT).show();
-//                    adapter.put(new Route(6));
-                }
-            });
+        mListView= getActivity().findViewById(R.id.routes_list);
+        if(adapter == null){
+            ArrayList<Route> tmp = new ArrayList<Route>();
+            tmp.add(new Route(1));
+            tmp.add(new Route(2));
+            tmp.add(new Route(3));
+            tmp.add(new Route(4));
+            tmp.add(new Route(5));
+            adapter = new RouteAdapter(getContext(), R.id.route_item_text, tmp, this, getActivity());
+        }
+
+        if(mListView != null) {
+            mListView.setAdapter(adapter);
+            mListView.setOnItemClickListener(this);
         }
     }
 
@@ -117,5 +110,12 @@ public class RoutesFragment extends Fragment implements RouteHandler{
     @Override
     public void OnRouteChosen(Route route) {
         Toast.makeText(getContext(), route.routeNumber, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        Route tmp = adapter.get(position);
+        Toast.makeText(getContext(), "Route " + tmp.routeNumber, Toast.LENGTH_SHORT).show();
+        adapter.put(new Route(6));
     }
 }
