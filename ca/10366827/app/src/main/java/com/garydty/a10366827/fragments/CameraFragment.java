@@ -178,29 +178,4 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     public void onSaveInstanceState( Bundle outState ) {
 
     }
-
-    class StorePhotoTask extends AsyncTask<byte[], String, String> {
-        @Override
-        protected String doInBackground(byte[]... jpeg) {
-            File photo=
-                    new File(Environment.getExternalStorageDirectory(),
-                            Calendar.getInstance().getTime().toString() + ".jpg");
-
-            if (photo.exists()) {
-                photo.delete();
-            }
-
-            try {
-                FileOutputStream fos=new FileOutputStream(photo.getPath());
-
-                fos.write(jpeg[0]);
-                fos.close();
-            }
-            catch (java.io.IOException e) {
-                Log.e("PictureDemo", "Exception in photoCallback", e);
-            }
-
-            return(null);
-        }
-    }
 }

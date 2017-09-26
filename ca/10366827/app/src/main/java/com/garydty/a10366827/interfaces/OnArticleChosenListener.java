@@ -7,5 +7,5 @@ import com.prof.rssparser.Article;
  */
 
 public interface OnArticleChosenListener {
-    public void articleChosen(Article article);
+    void articleChosen(Article article);
 }
