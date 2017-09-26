@@ -16,9 +16,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.garydty.a10366827.BuildConfig;
 import com.garydty.a10366827.R;
+import com.garydty.a10366827.models.RankedInfo;
 import com.garydty.a10366827.models.Summoner;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Gary Doherty on 25/09/2017.
@@ -89,6 +93,10 @@ public class RiotRequestHelper {
         return ENDPOINT + path + name;
     }
 
+    public static String createUrl(String path, long id){
+        return ENDPOINT + path + id;
+    }
+
     public <T> void addGsonRequestToQueue(String url, Class<T> clazz, Response.Listener<T> onPostsLoaded,
                                           Response.ErrorListener onPostsError){
         addToRequestQueue(
@@ -100,6 +108,20 @@ public class RiotRequestHelper {
                 onPostsError)
         );
     }
+
+//    public <T> void addGsonListRequestToQueue(String url, Class<T> clazz, Response.Listener<List<T>> onPostsLoaded,
+//                                              Response.ErrorListener onPostsError){
+//        TypeToken<ArrayList<T>> token = new TypeToken<ArrayList<T>>(){};
+//        addToRequestQueue(
+//                new GsonRequest<List<T>>(){
+//                    url,
+//                    clazz,
+//                    mHeaders,
+//                    onPostsLoaded,
+//                    onPostsError
+//                }
+//        );
+//    }
 
     public void addGetSummonerIconRequestToQueue(String summonerName, Response.Listener<Bitmap> onResult,
                                               Response.ErrorListener onError){

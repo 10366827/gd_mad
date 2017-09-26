@@ -20,11 +20,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.garydty.a10366827.R;
+import com.garydty.a10366827.models.LeaguePositionDTO;
+import com.garydty.a10366827.models.RankedInfo;
 import com.garydty.a10366827.models.Summoner;
 import com.garydty.a10366827.utility.RiotRequestHelper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SummonerSearchFragment extends Fragment {
     private static final String TAG = SummonerSearchFragment.class.getSimpleName();
@@ -156,22 +168,6 @@ public class SummonerSearchFragment extends Fragment {
 
         RiotRequestHelper.getInstance(getActivity()).addGetSummonerIconRequestToQueue(summonerName,
                 onImageLoaded, onVolleyError);
-//        RiotRequestHelper.getInstance(getActivity()).getImageLoader()
-//                .get("https://avatar.leagueoflegends.com/euw/sempify.png",
-//                        new ImageLoader.ImageListener(){
-//
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-//                                Bitmap result = response.getBitmap();
-//                                if(result != null)
-//                                    mSummonerIcon.setImageBitmap(response.getBitmap());
-//                            }
-//                        });
     }
 
     private final Response.Listener<Bitmap> onImageLoaded = new Response.Listener<Bitmap>() {
@@ -202,8 +198,45 @@ public class SummonerSearchFragment extends Fragment {
             String tmpLvl = "Level " + response.summonerLevel;
             mSummonerLevel.setText(tmpLvl);
 
+//            /lol/league/v3/positions/by-summoner/{summonerId}
+//            RiotRequestHelper.getInstance(getActivity()).addGsonRequestToQueue(
+//                    RiotRequestHelper.createUrl("/lol/league/v3/positions/by-summoner/", response.id),
+//                    ArrayList<LeaguePositionDTO>,
+//                    onRankedInfoLoaded,
+//                    onVolleyError
+//            );
+            RiotRequestHelper.getInstance(getActivity()).addGsonRequestToQueue(
+                    RiotRequestHelper.createUrl("/lol/league/v3/positions/by-summoner/", response.id),
+                    JsonArray.class,
+                    onRankedInfoLoaded,
+                    onVolleyError
+            );
+
+
+//                    addToRequestQueue(
+//
+//                    new JsonArrayRequest(
+//                            RiotRequestHelper.createUrl("/lol/league/v3/positions/by-summoner/", response.id),
+//                            onRankedInfoLoaded,
+//                            onVolleyError
+//                    )
+//            );
+
             spinner.setVisibility(View.GONE);
             mSummonerInfoBox.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private final Response.Listener<JsonArray> onRankedInfoLoaded = new Response.Listener<JsonArray>(){
+        @Override
+        public void onResponse(JsonArray response) {
+            Log.i(TAG, "Successfully retrieved summoner's ranked information.");
+            Gson gson=new Gson();
+            TypeToken<List<LeaguePositionDTO>> token = new TypeToken<List<LeaguePositionDTO>>(){};
+            List<LeaguePositionDTO> personList = gson.fromJson(response, token.getType());
+            if(personList != null && !personList.isEmpty()){
+                Log.i(TAG, "Player ranked: " + personList.get(0).rank);
+            }
         }
     };
 
