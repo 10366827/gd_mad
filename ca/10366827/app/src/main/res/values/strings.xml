@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_login">Login</string>
     <string name="scoreboard_pic">Take Scoreboard Pic</string>
     <string name="gallery">View Your Scoreboards</string>
     <string name="find_summoner">Search for Summoner</string>

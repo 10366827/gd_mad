@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_SUMMONER_SEARCH = "SummonerSearchFragment";
     private static final String TAG_STOP_FRAGMENT = "StopFragment";
     private static final String TAG_ARTICLE_FRAGMENT = "ArticleFragment";
+    private static String title = "League Helper";
 //    private CameraFragment mCameraFragment;
     private SummonerSearchFragment mSummonerFragment;
     private ArticleFragment mArticleFragment;
@@ -119,7 +120,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_login) {
+
             return true;
         }
 
@@ -165,6 +167,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
+
+        getSupportActionBar().setTitle(title);
         // Restore state of menu
         if(savedInstanceState != null){
             // navigationView.setCheckedItem(R.id.nav_view_routes);
@@ -172,7 +176,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadSummonerSearchFragment(){
-        getSupportActionBar().setTitle("Find Summoner");
+        title = "Find Summoner";
+        getSupportActionBar().setTitle(title);
         FragmentManager fm = getSupportFragmentManager();
         mSummonerFragment = (SummonerSearchFragment)fm.findFragmentByTag(TAG_SUMMONER_SEARCH);
 
@@ -190,7 +195,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadStopFragment(){
-        getSupportActionBar().setTitle("News");
+        title = "League News";
+        getSupportActionBar().setTitle(title);
         FragmentManager fm = getSupportFragmentManager();
         mArticleFragment = (ArticleFragment)fm.findFragmentByTag(TAG_ARTICLE_FRAGMENT);
         // create the fragment and data the first time
@@ -213,7 +219,8 @@ public class MainActivity extends AppCompatActivity
 
     @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     public void loadCameraFragment(){
-        getSupportActionBar().setTitle("Take Picture");
+        title = "Take Picture";
+        getSupportActionBar().setTitle(title);
         FragmentManager fm = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_holder, CameraFragment.newInstance());
