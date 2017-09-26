@@ -20,22 +20,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.models.LeaguePositionDTO;
-import com.garydty.a10366827.models.RankedInfo;
 import com.garydty.a10366827.models.Summoner;
 import com.garydty.a10366827.utility.RiotRequestHelper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class SummonerSearchFragment extends Fragment {
@@ -48,6 +42,15 @@ public class SummonerSearchFragment extends Fragment {
     private LinearLayout mSummonerInfoBox;
     private ProgressBar spinner;
 
+
+    private TextView mQueueType;
+    private TextView mRank;
+    private TextView mLeaguePoints;
+    private TextView mWins;
+    private TextView mLosses;
+    private TextView mLeagueName;
+    private LinearLayout mRankedInfo;
+
     public SummonerSearchFragment() {
         Log.i(TAG, "constructor");
         setRetainInstance(true);
@@ -55,10 +58,14 @@ public class SummonerSearchFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        //  INPUT INFORMATION
         outState.putString("input_text", mSearchInput.getText().toString());
+        outState.putInt("input_cursor_position", mSearchInput.getSelectionEnd());
+
+        //  GENERAL SUMMONER INFORMATION
         outState.putString("summoner_name", mSummonerName.getText().toString());
         outState.putString("summoner_level", mSummonerLevel.getText().toString());
-        outState.putInt("input_cursor_position", mSearchInput.getSelectionEnd());
+
         if(mSummonerIcon != null){
             Drawable tmpDrawable = mSummonerIcon.getDrawable();
             if(!(tmpDrawable instanceof StateListDrawable)){
@@ -68,7 +75,19 @@ public class SummonerSearchFragment extends Fragment {
                 }
             }
         }
+
         outState.putInt("info_visibility", mSummonerInfoBox.getVisibility());
+
+        //  RANKED INFORMATION
+        outState.putString("league_points", mLeaguePoints.getText().toString());
+        outState.putString("wins", mWins.getText().toString());
+        outState.putString("lossess", mLosses.getText().toString());
+        outState.putString("rank", mRank.getText().toString());
+        outState.putString("queue_type", mQueueType.getText().toString());
+        outState.putString("league_name", mLeagueName.getText().toString());
+
+        outState.putInt("ranked_info", mRankedInfo.getVisibility());
+
         super.onSaveInstanceState(outState);
     }
 
@@ -77,8 +96,12 @@ public class SummonerSearchFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if(savedInstanceState != null){
             Log.i(TAG, "onViewStateRestored - Bundle not null.");
+
+            //  INPUT INFORMATION
             mSearchInput.setText(savedInstanceState.getString("input_text"));
             mSearchInput.setSelection(savedInstanceState.getInt("input_cursor_position"));
+
+            //  GENERAL SUMMONER INFORMATION
             mSummonerName.setText(savedInstanceState.getString("summoner_name"));
             mSummonerLevel.setText(savedInstanceState.getString("summoner_level"));
 
@@ -87,6 +110,17 @@ public class SummonerSearchFragment extends Fragment {
 
             int visible = savedInstanceState.getInt("info_visibility");
             mSummonerInfoBox.setVisibility(visible == View.VISIBLE ? View.VISIBLE : View.GONE);
+
+            //  RANKED INFORMATION
+            mLeaguePoints.setText(savedInstanceState.getString("league_points"));
+            mWins.setText(savedInstanceState.getString("wins"));
+            mLosses.setText(savedInstanceState.getString("losses"));
+            mRank.setText(savedInstanceState.getString("rank"));
+            mQueueType.setText(savedInstanceState.getString("queue_type"));
+            mLeagueName.setText(savedInstanceState.getString("league_name"));
+
+            visible = savedInstanceState.getInt("ranked_info");
+            mRankedInfo.setVisibility(visible == View.VISIBLE ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -105,12 +139,20 @@ public class SummonerSearchFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated");
 
-        mSummonerName = getActivity().findViewById(R.id.summoner_name);
-        mSummonerLevel = getActivity().findViewById(R.id.summoner_level);
-        mSummonerIcon = getActivity().findViewById(R.id.summoner_icon);
-        mSearchInput = getActivity().findViewById(R.id.search_input);
-        mSummonerInfoBox = getActivity().findViewById(R.id.summoner_info);
-        spinner = getActivity().findViewById(R.id.summoner_search_progress);
+        mSummonerName = view.findViewById(R.id.summoner_name);
+        mSummonerLevel = view.findViewById(R.id.summoner_level);
+        mSummonerIcon = view.findViewById(R.id.summoner_icon);
+        mSearchInput = view.findViewById(R.id.search_input);
+        mSummonerInfoBox = view.findViewById(R.id.summoner_info);
+        spinner = view.findViewById(R.id.summoner_search_progress);
+
+        mLeaguePoints = view.findViewById(R.id.leaguePoints);
+        mWins = view.findViewById(R.id.wins);
+        mLosses = view.findViewById(R.id.losses);
+        mRank = view.findViewById(R.id.rank);
+        mQueueType = view.findViewById(R.id.queueType);
+        mLeagueName = view.findViewById(R.id.leagueName);
+        mRankedInfo = view.findViewById(R.id.ranked_info);
 
         final Button searchButton = getActivity().findViewById(R.id.search_btn);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +163,7 @@ public class SummonerSearchFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                fetchPosts();
+                searchForSummoner();
             }
         });
     }
@@ -144,19 +186,7 @@ public class SummonerSearchFragment extends Fragment {
         super.onDetach();
     }
 
-    //  VOLLEY START
-    private void fetchPosts() {
-//        HashMap<String, String> headers = new HashMap<>();
-//        headers.put("X-Riot-Token", NetworkHelper.API_KEY);
-//        headers.put("Accept-Language", "en-US,en;q=0.8");
-//        GsonRequest<Summoner> request = new GsonRequest<>(
-//                RiotRequestHelper.generateSummonerSearchUrl(Summoner.PATH, "Sempify")
-//                , Summoner.class,
-//                headers,        //  headers passe
-//                onSummonerInfoLoaded,  //  on response listener
-//                onVolleyError);  //  on error listener
-////        GsonRequest request = new StringRequest(Request.Method.GET, ENDPOINT + "Sempify", onSummonerInfoLoaded, onVolleyError);
-//        RiotRequestHelper.getInstance(getActivity()).addToRequestQueue(request);
+    private void searchForSummoner() {
         spinner.setVisibility(View.VISIBLE);
         String summonerName = mSearchInput.getText().toString().trim();
         RiotRequestHelper.getInstance(getActivity()).addGsonRequestToQueue(
@@ -198,29 +228,12 @@ public class SummonerSearchFragment extends Fragment {
             String tmpLvl = "Level " + response.summonerLevel;
             mSummonerLevel.setText(tmpLvl);
 
-//            /lol/league/v3/positions/by-summoner/{summonerId}
-//            RiotRequestHelper.getInstance(getActivity()).addGsonRequestToQueue(
-//                    RiotRequestHelper.createUrl("/lol/league/v3/positions/by-summoner/", response.id),
-//                    ArrayList<LeaguePositionDTO>,
-//                    onRankedInfoLoaded,
-//                    onVolleyError
-//            );
             RiotRequestHelper.getInstance(getActivity()).addGsonRequestToQueue(
                     RiotRequestHelper.createUrl("/lol/league/v3/positions/by-summoner/", response.id),
                     JsonArray.class,
                     onRankedInfoLoaded,
                     onVolleyError
             );
-
-
-//                    addToRequestQueue(
-//
-//                    new JsonArrayRequest(
-//                            RiotRequestHelper.createUrl("/lol/league/v3/positions/by-summoner/", response.id),
-//                            onRankedInfoLoaded,
-//                            onVolleyError
-//                    )
-//            );
 
             spinner.setVisibility(View.GONE);
             mSummonerInfoBox.setVisibility(View.VISIBLE);
@@ -233,9 +246,22 @@ public class SummonerSearchFragment extends Fragment {
             Log.i(TAG, "Successfully retrieved summoner's ranked information.");
             Gson gson=new Gson();
             TypeToken<List<LeaguePositionDTO>> token = new TypeToken<List<LeaguePositionDTO>>(){};
-            List<LeaguePositionDTO> personList = gson.fromJson(response, token.getType());
-            if(personList != null && !personList.isEmpty()){
-                Log.i(TAG, "Player ranked: " + personList.get(0).rank);
+            List<LeaguePositionDTO> leagueList = gson.fromJson(response, token.getType());
+            if(leagueList != null && !leagueList.isEmpty()){
+//                for(LeaguePositionDTO pos : personList){
+//
+//                }
+                getActivity().findViewById(R.id.ranked_info).setVisibility(View.VISIBLE);
+                LeaguePositionDTO tmpLeague = leagueList.get(0);
+                mQueueType.setText(tmpLeague.queueType);
+                mWins.setText(""+tmpLeague.wins + " wins");
+                mLosses.setText(""+tmpLeague.losses + " losses");
+                mRank.setText(tmpLeague.tier + " " + tmpLeague.rank);
+                mLeaguePoints.setText(""+tmpLeague.leaguePoints + " LP");
+                mLeagueName.setText(tmpLeague.leagueName);
+            }
+            else{
+                getActivity().findViewById(R.id.ranked_info).setVisibility(View.INVISIBLE);
             }
         }
     };
@@ -260,28 +286,51 @@ public class SummonerSearchFragment extends Fragment {
         Bundle savedInstanceState = getActivity().getIntent().getExtras();
         if (savedInstanceState != null) {
             Log.i(TAG, "onResume - Bundle not null.");
+
+            //  INPUT INFORMATION
             mSearchInput.setText(savedInstanceState.getString("input_text"));
             mSearchInput.setSelection(savedInstanceState.getInt("input_cursor_position"));
+
+            //  GENERAL SUMMONER INFORMATION
             mSummonerName.setText(savedInstanceState.getString("summoner_name"));
             mSummonerLevel.setText(savedInstanceState.getString("summoner_level"));
 
-            if (savedInstanceState.containsKey("summoner_icon"))
-                mSummonerIcon.setImageBitmap((Bitmap) savedInstanceState.getParcelable("summoner_icon"));
+            if(savedInstanceState.containsKey("summoner_icon"))
+                mSummonerIcon.setImageBitmap((Bitmap)savedInstanceState.getParcelable("summoner_icon"));
 
             int visible = savedInstanceState.getInt("info_visibility");
             mSummonerInfoBox.setVisibility(visible == View.VISIBLE ? View.VISIBLE : View.GONE);
+
+            //  RANKED INFORMATION
+            mLeaguePoints.setText(savedInstanceState.getString("league_points"));
+            mWins.setText(savedInstanceState.getString("wins"));
+            mLosses.setText(savedInstanceState.getString("losses"));
+            mRank.setText(savedInstanceState.getString("rank"));
+            mQueueType.setText(savedInstanceState.getString("queue_type"));
+            mLeagueName.setText(savedInstanceState.getString("league_name"));
+
+            visible = savedInstanceState.getInt("ranked_info");
+            mRankedInfo.setVisibility(visible == View.VISIBLE ? View.VISIBLE : View.GONE);
         }
-        if(mSummonerName.getText().toString().isEmpty())
+
+        if(mSummonerName.getText().toString().isEmpty()){
             mSummonerInfoBox.setVisibility(View.GONE);
+            mRankedInfo.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onPause() {
         Bundle outState = new Bundle();
+
+        //  INPUT INFORMATION
         outState.putString("input_text", mSearchInput.getText().toString());
+        outState.putInt("input_cursor_position", mSearchInput.getSelectionEnd());
+
+        //  GENERAL SUMMONER INFORMATION
         outState.putString("summoner_name", mSummonerName.getText().toString());
         outState.putString("summoner_level", mSummonerLevel.getText().toString());
-        outState.putInt("input_cursor_position", mSearchInput.getSelectionEnd());
+
         if(mSummonerIcon != null){
             Drawable tmpDrawable = mSummonerIcon.getDrawable();
             if(!(tmpDrawable instanceof StateListDrawable)){
@@ -291,7 +340,19 @@ public class SummonerSearchFragment extends Fragment {
                 }
             }
         }
+
         outState.putInt("info_visibility", mSummonerInfoBox.getVisibility());
+
+        //  RANKED INFORMATION
+        outState.putString("league_points", mLeaguePoints.getText().toString());
+        outState.putString("wins", mWins.getText().toString());
+        outState.putString("lossess", mLosses.getText().toString());
+        outState.putString("rank", mRank.getText().toString());
+        outState.putString("queue_type", mQueueType.getText().toString());
+        outState.putString("league_name", mLeagueName.getText().toString());
+
+        outState.putInt("ranked_info", mRankedInfo.getVisibility());
+
         getActivity().getIntent().putExtras(outState);
         super.onPause();
         Log.i(TAG, "onPause");
@@ -300,21 +361,5 @@ public class SummonerSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//
-//        if (savedInstanceState != null) {
-//            Log.i(TAG, "onActivityCreated - Bundle not null.");
-//            mSearchInput.setText(savedInstanceState.getString("input_text"));
-//            mSearchInput.setSelection(savedInstanceState.getInt("input_cursor_position"));
-//            mSummonerName.setText(savedInstanceState.getString("summoner_name"));
-//            mSummonerLevel.setText(savedInstanceState.getString("summoner_level"));
-//
-//            if (savedInstanceState.containsKey("summoner_icon"))
-//                mSummonerIcon.setImageBitmap((Bitmap) savedInstanceState.getParcelable("summoner_icon"));
-//
-//            int visible = savedInstanceState.getInt("info_visibility");
-//            mSummonerInfoBox.setVisibility(visible == View.VISIBLE ? View.VISIBLE : View.GONE);
-//        }
     }
-
-    //  VOLLEY END
 }

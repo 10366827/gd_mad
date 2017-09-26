@@ -29,12 +29,12 @@
             android:id="@+id/article_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#F0FFFF"
+            android:textColor="@color/header_white"
             android:textSize="25sp"
             android:layout_marginBottom="5dp"/>
 
         <TextView
-        android:textColor="#FFF8DC"
+        android:textColor="@color/text_white"
         android:id="@+id/article_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

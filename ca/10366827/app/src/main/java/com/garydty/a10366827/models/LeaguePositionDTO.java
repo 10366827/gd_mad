@@ -17,6 +17,9 @@ public class LeaguePositionDTO {
         public boolean inactive;
         public String playerOrTeamId;
         public int leaguePoints;
+        public String queueType;
+        public String leagueName;
+        public String tier;
 
 //        "queueType": "RANKED_SOLO_5x5",
 //        "hotStreak": false,

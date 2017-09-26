@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadSummonerSearchFragment(){
-        getSupportActionBar().setTitle("Summoner search...");
+        getSupportActionBar().setTitle("Find Summoner");
         FragmentManager fm = getSupportFragmentManager();
         mSummonerFragment = (SummonerSearchFragment)fm.findFragmentByTag(TAG_SUMMONER_SEARCH);
 

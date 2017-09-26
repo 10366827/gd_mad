@@ -3,15 +3,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="15dp"
-    android:background="@color/colorPrimary"
+    android:background="@color/app_background"
     android:id="@+id/summoner_info"
-    >
+    android:visibility="gone">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
-            android:background="#FFFFFF"
+            android:background="#FFD700"
             android:padding="1dp"
             android:id="@+id/summoner_icon"
             android:layout_width="80dp"
@@ -23,51 +24,66 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
-                android:textColor="@android:color/black"
+                android:textColor="@color/header_white"
                 android:id="@+id/summoner_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name"
                 android:textSize="20sp"/>
 
             <TextView
+                android:textColor="@color/colorPrimary"
                 android:id="@+id/summoner_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="summonerLevel"
                 android:textSize="15sp"/>
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ranked_info"
+        android:visibility="invisible"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/ranked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ranked" />
+            android:id="@+id/queueType"
+            android:textSize="20sp"
+            android:textColor="@color/header_white"
+            />
+
+        <TextView
+            android:id="@+id/leagueName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_white"/>
+
+        <TextView
+            android:id="@+id/rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_white" />
 
         <TextView
             android:id="@+id/leaguePoints"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="leaguePoints"/>
+            android:textColor="@color/text_white"/>
 
         <TextView
             android:id="@+id/wins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="wins"/>
+            android:textColor="@color/text_white"/>
 
         <TextView
-            android:text="losses"
             android:id="@+id/losses"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_white" />
 
     </LinearLayout>
 
