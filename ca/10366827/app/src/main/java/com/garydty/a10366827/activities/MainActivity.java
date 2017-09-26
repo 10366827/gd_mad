@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity
 
     @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     public void loadCameraFragment(){
+        getSupportActionBar().setTitle("Take Picture");
         FragmentManager fm = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_holder, CameraFragment.newInstance());

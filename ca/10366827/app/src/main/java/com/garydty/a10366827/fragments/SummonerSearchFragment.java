@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -253,7 +254,9 @@ public class SummonerSearchFragment extends Fragment {
 //                }
                 getActivity().findViewById(R.id.ranked_info).setVisibility(View.VISIBLE);
                 LeaguePositionDTO tmpLeague = leagueList.get(0);
-                mQueueType.setText(tmpLeague.queueType);
+                String queueTypeOutput = tmpLeague.queueType.contains("SOLO") ?
+                        "Ranked Solo" : "Ranked Flex";
+                mQueueType.setText(queueTypeOutput);
                 mWins.setText(""+tmpLeague.wins + " wins");
                 mLosses.setText(""+tmpLeague.losses + " losses");
                 mRank.setText(tmpLeague.tier + " " + tmpLeague.rank);
@@ -270,6 +273,7 @@ public class SummonerSearchFragment extends Fragment {
         @Override
         public void onErrorResponse(VolleyError error) {
             Log.e(TAG, "Volley Error: " + error.toString());
+            spinner.setVisibility(View.GONE);
         }
     };
 
@@ -354,6 +358,15 @@ public class SummonerSearchFragment extends Fragment {
         outState.putInt("ranked_info", mRankedInfo.getVisibility());
 
         getActivity().getIntent().putExtras(outState);
+
+        //  Hide keyboard
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm =
+                    (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         super.onPause();
         Log.i(TAG, "onPause");
     }
