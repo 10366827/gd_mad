@@ -49,6 +49,7 @@ public class LoginActivity extends BaseActivity implements
             setContentView(R.layout.activity_emailpassword);
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Firebase Login / Register");
 
             // Views
             mStatusTextView = (TextView) findViewById(R.id.status);

@@ -13,7 +13,7 @@
             android:title="@string/find_summoner" />
 
         <item
-            android:id="@+id/nav_view_stop"
+            android:id="@+id/nav_view_news"
             android:icon="@android:drawable/ic_dialog_info"
             android:title="@string/latest_news" />
 

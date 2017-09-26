@@ -2,10 +2,16 @@ package com.garydty.a10366827.activities;
 
 import android.Manifest;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +25,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -63,6 +71,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if (savedInstanceState == null) {
+            navigationView.setCheckedItem(R.id.nav_view_news);
+            loadNewsFragment();
+        }
     }
 
     private final Response.Listener<String> onRSSFeedRetrieved = new Response.Listener<String>() {
@@ -122,8 +135,8 @@ public class MainActivity extends AppCompatActivity
         if(id == R.id.nav_view_routes){
             loadSummonerSearchFragment();
         }
-        else if(id == R.id.nav_view_stop){
-            loadStopFragment();
+        else if(id == R.id.nav_view_news){
+            loadNewsFragment();
         }
         else if(id == R.id.nav_camera) {
             MainActivityPermissionsDispatcher.loadCameraFragmentWithPermissionCheck(MainActivity.this);
@@ -180,7 +193,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    private void loadStopFragment(){
+    private void loadNewsFragment(){
         title = "League News";
         getSupportActionBar().setTitle(title);
         FragmentManager fm = getSupportFragmentManager();
@@ -202,11 +215,18 @@ public class MainActivity extends AppCompatActivity
     public void loadCameraFragment(){
         title = "Take Picture";
         getSupportActionBar().setTitle(title);
-        FragmentManager fm = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_holder, CameraFragment.newInstance());
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.commit();
+
+        //  After getting permissions, app would crash due to IllegalStateException involving
+        //  the InstanceState. This is how I solved the problem...
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            public void run() {
+                FragmentManager fm = getSupportFragmentManager();
+                android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_holder, CameraFragment.newInstance());
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+            }
+        }, 350);
     }
 
     @Override
@@ -269,5 +289,14 @@ public class MainActivity extends AppCompatActivity
     @OnShowRationale({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
     void showRationaleForCamera(PermissionRequest request) {
         showRationaleDialog(R.string.permission_camera_rationale, request);
+    }
+
+    @Override
+    public void onPause() {
+        Bundle outState = new Bundle();
+        outState.putString("title", title);
+        getIntent().putExtras(outState);
+        super.onPause();
+        Log.i(TAG, "onPause");
     }
 }
