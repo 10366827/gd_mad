@@ -7,18 +7,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.garydty.a10366827.models.Summoner;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Gary Doherty on 18/09/2017.
  */
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "leagueyoke.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DBHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -27,19 +27,62 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SummonerTable.CREATE_TABLE);
+        db.execSQL(MarkerTable.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + SummonerTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MarkerTable.TABLE_NAME);
         onCreate(db);
     }
 
     public void clearDatabase(){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + SummonerTable.TABLE_NAME);
+        db.execSQL("DELETE FROM " + MarkerTable.TABLE_NAME);
         db.close();
     }
+
+    public void addMarker(double lng, double lat){
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(MarkerTable.LONGITUDE, lng);
+        cv.put(MarkerTable.LATITUDE, lat);
+
+        db.insert(MarkerTable.TABLE_NAME, null, cv);
+        db.close();
+    }
+
+    public void removeAllMarkers(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM " + MarkerTable.TABLE_NAME);
+        db.close();
+    }
+
+    public ArrayList<MarkerOptions> getMarkerOptions(){
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + MarkerTable.TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<MarkerOptions> markers = new ArrayList<>();
+        if(cursor == null)
+            return markers;
+
+        if(cursor.moveToFirst()) {
+            do {
+                MarkerOptions m = new MarkerOptions();
+                double longitude = cursor.getDouble(0);
+                double latitude = cursor.getDouble(1);
+                m.position(new LatLng(longitude, latitude));
+                markers.add(m);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return markers;
+    }
+
 
     public void addSummoner(Summoner summoner){
         SQLiteDatabase db = getWritableDatabase();
@@ -99,6 +142,20 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return summoners;
+    }
+
+    private class MarkerTable {
+        static final String TABLE_NAME = "MarkerTable";
+
+        //  Columns
+        static final String LONGITUDE = "longitude";
+        static final String LATITUDE = "latitude";
+
+        // Table Create Statement
+        public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_NAME + "(" +
+                LONGITUDE + " DOUBLE," +
+                LATITUDE + " DOUBLE)";
     }
 
     private class SummonerTable {

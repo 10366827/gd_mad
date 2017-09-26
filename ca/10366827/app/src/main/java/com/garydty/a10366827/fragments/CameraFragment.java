@@ -133,7 +133,7 @@ public class CameraFragment extends Fragment implements Camera.PictureCallback {
     @Override
     public void onPictureTaken(byte[] bytes, Camera camera) {
 //        new CameraDisplay.StorePhotoTask().execute(bytes);
-        Toast.makeText(getContext(), "" + bytes.length, Toast.LENGTH_LONG).show();
+//        Toast.makeText(getContext(), "" + bytes.length, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getContext(), PictureConfirmationActivity.class);
         intent.putExtra("picture", bytes);
         startActivity(intent);

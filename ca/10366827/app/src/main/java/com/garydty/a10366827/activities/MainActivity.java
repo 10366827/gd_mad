@@ -3,11 +3,11 @@ package com.garydty.a10366827.activities;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -19,27 +19,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.garydty.a10366827.R;
 import com.garydty.a10366827.fragments.ArticleFragment;
 import com.garydty.a10366827.fragments.CameraFragment;
-import com.garydty.a10366827.fragments.SummonerFragment;
-import com.garydty.a10366827.fragments.StopFragment;
 import com.garydty.a10366827.fragments.SummonerSearchFragment;
 import com.garydty.a10366827.interfaces.OnFragmentInteractionListener;
-import com.garydty.a10366827.models.Summoner;
-import com.garydty.a10366827.utility.GsonRequest;
-import com.garydty.a10366827.utility.RiotRequestHelper;
-import com.prof.rssparser.Article;
-import com.prof.rssparser.Parser;
-
-import java.util.ArrayList;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -53,15 +41,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
-    private static final String LAST_ITEM = "last_item_selected";
+//    private static final String LAST_ITEM = "last_item_selected";
 //    private static final String TAG_CAMERA_FRAGMENT = "CameraFragment";
     private static final String TAG_SUMMONER_SEARCH = "SummonerSearchFragment";
-    private static final String TAG_STOP_FRAGMENT = "StopFragment";
     private static final String TAG_ARTICLE_FRAGMENT = "ArticleFragment";
     private static String title = "League Helper";
-//    private CameraFragment mCameraFragment;
-    private SummonerSearchFragment mSummonerFragment;
-    private ArticleFragment mArticleFragment;
     private int lastItemSelected;
 
     @Override
@@ -121,7 +105,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_login) {
-
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
             return true;
         }
 
@@ -140,29 +125,27 @@ public class MainActivity extends AppCompatActivity
         else if(id == R.id.nav_view_stop){
             loadStopFragment();
         }
-        else if (id == R.id.nav_camera) {
+        else if(id == R.id.nav_camera) {
             MainActivityPermissionsDispatcher.loadCameraFragmentWithPermissionCheck(MainActivity.this);
         }
-//        else if (id == R.id.nav_gallery) {
-//            //  Handle the gallery action
-//        }
-
-//        else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+        else if(id == R.id.nav_map){
+            loadMapActivity();
+        }
+        else if(id == R.id.nav_gallery){
+            Intent i = new Intent(this, GalleryActivity.class);
+            startActivity(i);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(LAST_ITEM, lastItemSelected);
-        super.onSaveInstanceState(outState);
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putInt(LAST_ITEM, lastItemSelected);
+//        super.onSaveInstanceState(outState);
+//    }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState){
@@ -175,13 +158,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @NeedsPermission({ Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION })
+    public void loadMapActivity(){
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        startActivity(mapIntent);
+    }
+
     private void loadSummonerSearchFragment(){
         title = "Find Summoner";
         getSupportActionBar().setTitle(title);
         FragmentManager fm = getSupportFragmentManager();
-        mSummonerFragment = (SummonerSearchFragment)fm.findFragmentByTag(TAG_SUMMONER_SEARCH);
+        SummonerSearchFragment mSummonerFragment = (SummonerSearchFragment) fm.findFragmentByTag(TAG_SUMMONER_SEARCH);
 
-        // create the fragment and data the first time
         if (mSummonerFragment == null)
             mSummonerFragment = SummonerSearchFragment.newInstance();
 
@@ -190,31 +178,24 @@ public class MainActivity extends AppCompatActivity
 //        fragmentTransaction.addToBackStack(TAG_SUMMONER_SEARCH);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
-
-//        replaceFragment(mSummonerFragment);
     }
 
     private void loadStopFragment(){
         title = "League News";
         getSupportActionBar().setTitle(title);
         FragmentManager fm = getSupportFragmentManager();
-        mArticleFragment = (ArticleFragment)fm.findFragmentByTag(TAG_ARTICLE_FRAGMENT);
+        ArticleFragment mArticleFragment = (ArticleFragment) fm.findFragmentByTag(TAG_ARTICLE_FRAGMENT);
         // create the fragment and data the first time
         if (mArticleFragment == null) {
-            Log.i("LoadFragment", "StopFragment");
+            Log.i("LoadFragment", "ArticleFragment");
             // add the fragment
             mArticleFragment = ArticleFragment.newInstance();
-//            fm.beginTransaction().add(mStopFragment, TAG_STOP_FRAGMENT).commit();
-//            fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
-//            // load data from a data source or perform any calculation
-//            mRetainedFragment.setData(loadMyData());
         }
         android.support.v4.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_holder, mArticleFragment, TAG_ARTICLE_FRAGMENT);
 //        fragmentTransaction.addToBackStack(TAG_STOP_FRAGMENT);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
-//        replaceFragment(mStopFragment);
     }
 
     @NeedsPermission({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })
@@ -256,6 +237,23 @@ public class MainActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @OnShowRationale({Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION })
+    void showRationaleForMap(PermissionRequest request) {
+        showRationaleDialog(R.string.location_rationale, request);
+    }
+
+    @OnNeverAskAgain({ Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION })
+    void onMapNeverAskAgain(){
+        Toast.makeText(this, "We won't ask for this permission again.", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnPermissionDenied({ Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION })
+    void onLocationDenied(){
+        Toast.makeText(
+                this, "Location permissioned denied, you won't be able to use this function.",
+                Toast.LENGTH_SHORT).show();
     }
 
     @OnPermissionDenied({ Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA })

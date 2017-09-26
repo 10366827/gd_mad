@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_login">Login</string>
-    <string name="scoreboard_pic">Take Scoreboard Pic</string>
+    <string name="scoreboard_pic">Take Pic</string>
     <string name="gallery">View Your Scoreboards</string>
     <string name="find_summoner">Search for Summoner</string>
     <string name="find_stop_info">Search By Stop</string>
@@ -21,6 +21,7 @@
     <string name="button_allow">Allow</string>
     <string name="button_deny">Deny</string>
     <string name="permission_camera_rationale">Camera Permissions Required</string>
+    <string name="location_rationale">Location Permissions Required</string>
     <string name="permission_storage_rationale">Permission to write to external storage required</string>
     <string name="permission_camera_never_ask_again">Camera permission will never be asked for again…</string>
 
@@ -49,4 +50,21 @@
         <item>Japan</item>
         <item>Russia</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="a_map">A Map</string>
+    <string name="view_your_pics">View your pics</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
